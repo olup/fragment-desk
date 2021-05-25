@@ -1,7 +1,10 @@
 import { open } from "@tauri-apps/api/dialog";
+import { writeFile } from "@tauri-apps/api/fs";
 import { invoke } from "@tauri-apps/api/tauri";
+import { format } from "date-fns";
 import { useAppStore } from "hooks/appStore";
 import { useStore } from "hooks/store";
+import { nanoid } from "nanoid";
 import { dirname, relative } from "path";
 import { FC, useEffect, useState } from "react";
 import { FiArrowLeft, FiFile, FiFilePlus, FiFolder } from "react-icons/fi";
@@ -9,11 +12,12 @@ import { styled } from "theme";
 import { FsElement } from "types";
 import { removeExt } from "utils";
 import { Icon } from "./ui/Icon";
-import { Box, Flex } from "./ui/Layout";
+import { Flex } from "./ui/Layout";
 import { ScrollArea } from "./ui/ScrollArea";
 
 const SideBarStyled = styled("div", {
-  minHeight: "100%",
+  display: "flex",
+  flexDirection: "column",
   height: "100%",
   borderRight: "1px solid #ccc",
   fontFamily: "Monserrat",
@@ -112,68 +116,77 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
     onLoadDir(path);
   };
 
+  const onCreateFile = async () => {
+    const path = `${directoryPath}/${format(new Date(), "yyyy-MM-dd")}-${nanoid(
+      3
+    )}.md`;
+    await writeFile({ path, contents: "" });
+    await onLoadDir(directoryPath);
+    onOpen?.(path);
+  };
+
   useEffect(() => {
-    const path = "/home/olup/Desktop/Write";
-    set({ currentProjectPath: path });
-    onLoadDir(path);
+    if (directoryPath) onLoadDir(directoryPath);
   }, []);
 
   return (
-    <ScrollArea>
-      <SideBarStyled>
-        <Flex>
-          <MainButton onClick={onOpenFile}>
-            <Icon as={FiFile} />
-          </MainButton>
-          <MainButton onClick={onOpenDir}>
-            <Icon as={FiFolder} />
-          </MainButton>
-          <MainButton>
-            <Icon as={FiFilePlus} />
-          </MainButton>
-        </Flex>
+    <SideBarStyled>
+      <div style={{ borderBottom: "1px solid #ccc", display: "flex" }}>
+        <MainButton onClick={onOpenFile}>
+          <Icon as={FiFile} />
+        </MainButton>
+        <MainButton onClick={onOpenDir}>
+          <Icon as={FiFolder} />
+        </MainButton>
+        <MainButton>
+          <Icon as={FiFilePlus} onClick={onCreateFile} />
+        </MainButton>
+      </div>
 
-        {directoryPath !== projectPath && (
-          <FileStyled
-            onClick={() => {
-              onLoadDir(dirname(directoryPath));
-            }}
-          >
-            <Box>
-              <Icon as={FiArrowLeft} />
-            </Box>
-          </FileStyled>
-        )}
-
-        {fileList?.map((element) => (
-          <FileStyled
-            onClick={() => {
-              if (element.File) onOpen?.(element.File.path);
-              if (element.Directory) onLoadDir(element.Directory.path);
-            }}
-            selected={element.File?.path == filePath}
-          >
-            <Box mr={10}>
-              <Icon as={element.File ? FiFile : FiFolder} />
-            </Box>
-            <Box>
-              <Box mb={5}>
-                {element.Directory?.name || removeExt(element.File?.name || "")}
-              </Box>
-              {element.File && (
-                <FileContentStyled>
-                  {element.File?.preview?.slice(0, 100)}
-                </FileContentStyled>
-              )}
-              {element.Directory && (
-                <FileContentStyled>
-                  {element.Directory?.children_count} items
-                </FileContentStyled>
-              )}
-            </Box>
-          </FileStyled>
-        ))}
-      </SideBarStyled>
-    </ScrollArea>
+      {directoryPath !== projectPath && (
+        <FileStyled
+          onClick={() => {
+            onLoadDir(dirname(directoryPath));
+          }}
+        >
+          <div>
+            <FiArrowLeft />
+          </div>
+        </FileStyled>
+      )}
+      <div style={{ flex: 1 }}>
+        <ScrollArea>
+          {fileList?.map((element) => (
+            <FileStyled
+              onClick={() => {
+                if (element.File) onOpen?.(element.File.path);
+                if (element.Directory) onLoadDir(element.Directory.path);
+              }}
+              selected={element.File?.path == filePath}
+            >
+              <div style={{ marginRight: 10 }}>
+                <Icon as={element.File ? FiFile : FiFolder} />
+              </div>
+              <div>
+                <div style={{ marginBottom: 5 }}>
+                  {element.Directory?.name ||
+                    removeExt(element.File?.name || "")}
+                </div>
+                {element.File && (
+                  <FileContentStyled>
+                    {element.File?.preview?.slice(0, 100)}
+                  </FileContentStyled>
+                )}
+                {element.Directory && (
+                  <FileContentStyled>
+                    {element.Directory?.children_count} items
+                  </FileContentStyled>
+                )}
+              </div>
+            </FileStyled>
+          ))}
+        </ScrollArea>
+      </div>
+    </SideBarStyled>
   );
 };

@@ -1,18 +1,24 @@
 import create from "zustand";
 import { combine } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 export const useStore = create(
-  combine(
-    {
-      content: "",
-      currentFilePath: "",
-      currentProjectPath: "",
-      currentDirectoryPath: "",
+  persist(
+    combine(
+      {
+        content: "",
+        currentFilePath: "",
+        currentProjectPath: "",
+        currentDirectoryPath: "",
 
-      showSide: false,
-    },
-    (set) => ({
-      set,
-    })
+        showSide: false,
+      },
+      (set) => ({
+        set,
+      })
+    ),
+    {
+      name: "store", // unique name
+    }
   )
 );

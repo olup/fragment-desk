@@ -66,7 +66,7 @@ function App() {
   return (
     <AppContainer>
       <TopBar />
-      <Flex flex={1}>
+      <div style={{ display: "flex", flex: 1 }}>
         {showSide && (
           <div
             style={{
@@ -103,17 +103,17 @@ function App() {
             }}
           >
             <ScrollArea>
-              <Box style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+              <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
                 <Editor
                   key={filePath}
                   initialValue={content}
                   onSave={(c) => onSave(c)}
                 />
-              </Box>
+              </div>
             </ScrollArea>
           </div>
         </div>
-      </Flex>
+      </div>
     </AppContainer>
   );
 }
