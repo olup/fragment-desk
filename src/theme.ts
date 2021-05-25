@@ -1,6 +1,6 @@
 import { createCss } from "@stitches/react";
 
-export const { styled, css, global } = createCss({
+export const { styled, css, global, keyframes } = createCss({
   utils: {
     mb: (c) => (v) => ({
       marginBottom: v,

@@ -6,8 +6,10 @@ import { EditorView, keymap, placeholder } from "@codemirror/view";
 import { styled } from "theme";
 import { FC, useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
+import { useStore } from "hooks/store";
 
 const EditoContainer = styled("div", {
+  width: "100%",
   fontSize: 16,
   ".cmt-meta": {
     opacity: 0.3,
@@ -45,15 +47,14 @@ type EditorProps = {
   placeholder?: string;
 };
 export const Editor: FC<EditorProps> = ({
-  onChange,
   onSave,
   initialValue = "",
   placeholder: placeholderText,
 }) => {
   const [state, setState] = useState(initialValue);
+  const set = useStore((s) => s.set);
 
   const editor = useRef<HTMLDivElement | null>(null);
-  const deboucedOnChange = useDebouncedCallback(onChange || (() => {}), 100);
 
   // initialize view
   useEffect(() => {
@@ -95,7 +96,7 @@ export const Editor: FC<EditorProps> = ({
 
   //bind events to states
   useEffect(() => {
-    deboucedOnChange?.(state);
+    set({ content: state });
   }, [state]);
 
   return (

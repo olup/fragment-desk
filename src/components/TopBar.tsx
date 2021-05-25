@@ -1,10 +1,12 @@
 import { useStore } from "hooks/store";
 import { basename } from "path";
 import { FC } from "react";
-import { FiMenu } from "react-icons/fi";
+import { FiInfo, FiMenu } from "react-icons/fi";
 import { styled } from "theme";
 import { removeExt } from "utils";
+import { Sum } from "./Sum";
 import { Icon } from "./ui/Icon";
+import { Popover } from "./ui/Popover";
 import { Spacer } from "./ui/Spacer";
 
 const TopBarContainer = styled("div", {
@@ -21,8 +23,9 @@ const TopBarContainer = styled("div", {
   backgroundColor: "#fff",
   zIndex: 100,
   paddingLeft: 5,
-  paddingRigth: 5,
+  paddingRight: 5,
   borderBottom: "1px solid #ccc",
+  boxSizing: "border-box",
 });
 
 export const TopBar: FC = () => {
@@ -37,6 +40,9 @@ export const TopBar: FC = () => {
       <Spacer />
       <div>{filePath ? removeExt(basename(filePath)) : "Fragment"}</div>
       <Spacer />
+      <Popover trigger={<FiInfo />}>
+        <Sum />
+      </Popover>
     </TopBarContainer>
   );
 };

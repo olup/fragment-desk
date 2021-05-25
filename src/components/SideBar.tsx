@@ -35,20 +35,18 @@ const FileStyled = styled("div", {
   marginTop: -1,
   position: "relative",
   zIndex: 0,
+  opacity: 0.5,
   "&:hover": {
-    backgroundColor: "#2d7be0",
-    color: "#fff",
-    borderBottom: "1px solid #2d7be0",
-    borderTop: "1px solid #2d7be0",
+    opacity: 1,
+
     zIndex: 10,
   },
   variants: {
     selected: {
       true: {
-        backgroundColor: "#2d7be0",
-        color: "#fff",
-        borderBottom: "1px solid #2d7be0",
-        borderTop: "1px solid #2d7be0",
+        opacity: 1,
+
+        boxShadow: "5px 0 0 #2d7be0 inset",
         zIndex: 10,
       },
     },
