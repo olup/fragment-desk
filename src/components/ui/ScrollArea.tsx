@@ -10,17 +10,14 @@ import {
 import { FC } from "react";
 
 const Container = styled("div", {
+  flex: 1,
   height: "100%",
-  width: "100%",
 });
 
 const StyledScrollArea = styled(Root, {
   position: "relative",
-  zIndex: 0,
-  maxWidth: "100%",
-  maxHeight: "100%",
   height: "100%",
-  width: "100%",
+  zIndex: 0,
   "& [data-radix-scroll-area-viewport-position]::-webkit-scrollbar": {
     display: "none",
   },

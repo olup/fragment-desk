@@ -154,7 +154,7 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
           </div>
         </FileStyled>
       )}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, minHeight: 0 }}>
         <ScrollArea>
           {fileList?.map((element) => (
             <FileStyled
