@@ -4,8 +4,8 @@ import { FiX } from "react-icons/fi";
 import { keyframes, styled } from "theme";
 
 const scaleIn = keyframes({
-  "0%": { opacity: 0, transform: "scale(1) translateY(-20px)" },
-  "100%": { opacity: 1, transform: "scale(1) translateY(0px)" },
+  from: { opacity: 0, transform: "scale(1) translateY(-5px)" },
+  to: { opacity: 1, transform: "scale(1) translateY(0px)" },
 });
 
 const StyledContent = styled(RadixPopover.Content, {
@@ -18,7 +18,7 @@ const StyledContent = styled(RadixPopover.Content, {
   width: 200,
 
   transformOrigin: "var(--radix-popover-content-transform-origin)",
-  animation: `${scaleIn} 0.2s`,
+  animation: `0.1s ${scaleIn}`,
 });
 
 const StyledClose = styled(RadixPopover.Close, {
@@ -33,7 +33,7 @@ const StyledClose = styled(RadixPopover.Close, {
 export const Popover: FC<{ trigger: ReactNode }> = ({ trigger, children }) => (
   <RadixPopover.Root>
     <RadixPopover.Trigger as="div">{trigger}</RadixPopover.Trigger>
-    <StyledContent>
+    <StyledContent sideOffset={5}>
       <StyledClose as="div">
         <FiX />
       </StyledClose>

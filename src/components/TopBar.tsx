@@ -4,6 +4,7 @@ import { FC } from "react";
 import { FiInfo, FiMenu } from "react-icons/fi";
 import { styled } from "theme";
 import { removeExt } from "utils";
+import { InfoBox } from "./InfoBox";
 import { Sum } from "./Sum";
 import { Icon } from "./ui/Icon";
 import { Popover } from "./ui/Popover";
@@ -40,9 +41,8 @@ export const TopBar: FC = () => {
       <Spacer />
       <div>{filePath ? removeExt(basename(filePath)) : "Fragment"}</div>
       <Spacer />
-      <Popover trigger={<FiInfo />}>
-        <Sum />
-      </Popover>
+      <FiInfo />
+      <InfoBox />
     </TopBarContainer>
   );
 };
