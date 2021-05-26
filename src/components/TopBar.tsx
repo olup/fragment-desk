@@ -1,7 +1,14 @@
+import { appWindow } from "@tauri-apps/api/window";
 import { useStore } from "hooks/store";
 import { basename } from "path";
 import { FC } from "react";
-import { FiInfo, FiMenu } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
+import {
+  VscChromeClose,
+  VscChromeMaximize,
+  VscChromeMinimize,
+  VscInfo,
+} from "react-icons/vsc";
 import { styled } from "theme";
 import { removeExt } from "utils";
 import { InfoBox } from "./InfoBox";
@@ -26,11 +33,21 @@ const TopBarContainer = styled("div", {
   boxSizing: "border-box",
 });
 
+const TopIcon = styled("div", {
+  marginLeft: 10,
+  cursor: "pointer",
+  opacity: 0.5,
+  "&:hover": {
+    opacity: 1,
+  },
+});
+
 export const TopBar: FC = () => {
   const [showSide, filePath] = useStore((s) => [s.showSide, s.currentFilePath]);
+  const showInfo = useStore((s) => s.showInfo);
   const set = useStore((s) => s.set);
   return (
-    <TopBarContainer className="titlebar" data-tauri-drag-region>
+    <TopBarContainer className="titlebar" data-tauri-drag-region="">
       <FiMenu
         onClick={() => set({ showSide: !showSide })}
         style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
@@ -38,8 +55,11 @@ export const TopBar: FC = () => {
       <Spacer />
       <div>{filePath ? removeExt(basename(filePath)) : "Fragment"}</div>
       <Spacer />
-      <FiInfo />
-      {/* <InfoBox /> */}
+      <TopIcon as={VscInfo} onClick={() => set({ showInfo: !showInfo })} />
+      <TopIcon as={VscChromeMinimize} onClick={() => appWindow.minimize()} />
+      <TopIcon as={VscChromeMaximize} onClick={() => appWindow.maximize()} />
+      <TopIcon as={VscChromeClose} onClick={() => appWindow.close()} />
+      {showInfo && <InfoBox />}
     </TopBarContainer>
   );
 };

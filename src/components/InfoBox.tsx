@@ -9,6 +9,7 @@ const InfoBoxStyled = styled("div", {
   backgroundColor: "#fff",
   top: 29,
   right: 20,
+  fontFamily: "Monserrat",
 });
 export const InfoBox = () => {
   const content = useStore((s) => s.content);
@@ -16,8 +17,16 @@ export const InfoBox = () => {
   const cc = content.length;
   return (
     <InfoBoxStyled>
-      <div>{wc} Words</div>
-      <div>{cc} Characters</div>
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 18, color: "#2d7be0" }}>{wc}</div>{" "}
+          <div style={{ textTransform: "uppercase" }}>Words</div>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 18, color: "#2d7be0" }}>{cc}</div>
+          <div style={{ textTransform: "uppercase" }}> Characters</div>
+        </div>
+      </div>
     </InfoBoxStyled>
   );
 };

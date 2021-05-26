@@ -12,6 +12,7 @@ export const useStore = create(
         currentDirectoryPath: "",
 
         showSide: false,
+        showInfo: false,
       },
       (set) => ({
         set,
