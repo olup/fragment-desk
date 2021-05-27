@@ -1,20 +1,27 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useState } from "react";
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from "react-dnd";
 
 export const DraggableItem: FC<{
   type: string;
   id: string;
   index: number;
+  canCombine?: boolean;
   move?: (id: string, to: number) => void;
-}> = ({ children, type, index, id, move }) => {
+  combine?: (fromId: string, toId: string) => void;
+}> = ({ children, type, index, id, move, canCombine, combine }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [isTargeted, setIsTargeted] = useState(false);
 
-  const [{ handlerId }, drop] = useDrop({
+  const [{ handlerId, isOver }, drop] = useDrop({
     accept: type,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
+        isOver: monitor.isOver(),
       };
+    },
+    drop(item: any) {
+      isTargeted && combine?.(item.id, id);
     },
     hover(item: any, monitor: DropTargetMonitor) {
       if (!ref.current) {
@@ -24,7 +31,7 @@ export const DraggableItem: FC<{
       const hoverIndex = index;
 
       // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
+      if (id === item.id) {
         return;
       }
 
@@ -32,8 +39,8 @@ export const DraggableItem: FC<{
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
 
       // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      let lowThres = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      let highTres = lowThres;
 
       // Determine mouse position
       const clientOffset = monitor.getClientOffset();
@@ -41,25 +48,32 @@ export const DraggableItem: FC<{
       // Get pixels to the top
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
+      if (canCombine) {
+        lowThres = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 3;
+        highTres = lowThres * 2;
 
-      // Dragging downwards
-      let to = hoverIndex;
-      if (hoverClientY < hoverMiddleY) {
+        if (hoverClientY > lowThres && hoverClientY < highTres) {
+          if (!isTargeted) setIsTargeted(true);
+        } else {
+          if (isTargeted) setIsTargeted(false);
+        }
+      }
+
+      if (dragIndex < hoverIndex && hoverClientY < highTres) {
         return;
       }
 
       // Dragging upwards
-      if (hoverClientY > hoverMiddleY) {
-        to = hoverIndex + 1;
+      if (dragIndex > hoverIndex && hoverClientY > lowThres) {
+        return;
       }
 
-      // Time to actually perform the action
       move?.(item.id, hoverIndex);
+      item.index = hoverIndex;
     },
   });
+
+  if (!isOver && isTargeted) setIsTargeted(false);
 
   const [{ isDragging }, drag] = useDrag({
     type: "file",
@@ -70,11 +84,15 @@ export const DraggableItem: FC<{
   });
 
   const opacity = isDragging ? 0 : 1;
-
+  const borderLeft = isTargeted ? "3px solid #222" : "none";
   drag(drop(ref));
 
   return (
-    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+    <div
+      ref={ref}
+      style={{ opacity, borderLeft, boxSizing: "border-box" }}
+      data-handler-id={handlerId}
+    >
       {children}
     </div>
   );

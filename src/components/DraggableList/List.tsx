@@ -6,7 +6,8 @@ export const DraggableList: FC<{
   elements: any[];
   render: (element: any) => ReactNode;
   onSortChange?: (elements: any[]) => void;
-}> = ({ forType, elements, render, onSortChange }) => {
+  onCombine?: (fromId: string, toId: string) => void;
+}> = ({ forType, elements, render, onSortChange, onCombine }) => {
   const onChangePos = (id: string, pos: number) => {
     const el = elements.find((el) => el.id === id);
     const without = elements.filter((el) => el.id !== id);
@@ -22,7 +23,9 @@ export const DraggableList: FC<{
           id={e.id}
           key={e.id}
           index={index}
+          canCombine={e.canCombine}
           move={onChangePos}
+          combine={onCombine}
         >
           {render(e)}
         </DraggableItem>

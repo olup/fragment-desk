@@ -1,16 +1,17 @@
+import { copyFile, removeFile } from "@tauri-apps/api/fs";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useStore } from "hooks/store";
 import { useDirectoryConfig } from "hooks/useDirectoryConfig";
 import { useDirectoryWatch } from "hooks/useDirectoryWatch";
 import { keyBy } from "lodash";
-import { basename, dirname } from "path";
+import { basename, dirname, join } from "path";
 import { FC, useCallback, useEffect, useState } from "react";
 import { FiArrowLeft } from "react-icons/fi";
 import { VscFile, VscFiles } from "react-icons/vsc";
 import { styled } from "theme";
 import { FsElement } from "types";
 import { removeExt } from "utils";
-import { DraggableItem, DraggableList } from "./DraggableList";
+import { DraggableList } from "./DraggableList";
 import { Icon } from "./ui/Icon";
 import { ScrollArea } from "./ui/ScrollArea";
 
@@ -66,14 +67,13 @@ const FileContentStyled = styled("div", {
   opacity: 0.5,
 });
 
-export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
-  onOpen,
-}) => {
+export const SideBar: FC = () => {
   const filePath = useStore((s) => s.currentFilePath);
   const directoryPath = useStore((s) => s.currentDirectoryPath);
   const projectPath = useStore((s) => s.currentProjectPath);
   const set = useStore((s) => s.set);
 
+  // filelist, order with the config file
   const [fileList, setFileList] = useState<FsElement[]>([]);
   const [{ customOrder }, setConfig] = useDirectoryConfig(directoryPath);
 
@@ -81,7 +81,9 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
     ...f,
     path: f.Directory?.path || f.File.path,
     id: f.Directory?.path || f.File.path,
+    canCombine: !!f.Directory,
   }));
+
   const fileByName = keyBy(fileListWithPathAndId, "path");
   const orderedFileList = [
     ...customOrder.map((path) => fileByName[path]).filter(Boolean),
@@ -95,7 +97,6 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
         path,
       });
       setFileList(fileList);
-      set({ currentDirectoryPath: path });
     } catch (err) {
       console.log(err);
     }
@@ -103,19 +104,27 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
 
   useEffect(() => {
     if (directoryPath) onLoadDir(directoryPath);
-  }, []);
+  }, [directoryPath]);
 
   const onFileChange = useCallback(
     (path: string) => onLoadDir(directoryPath),
     [directoryPath]
   );
 
+  useDirectoryWatch(directoryPath, onFileChange);
+
+  // Organizing functions
   const onSortChange = (newFileList: FsElement[]) => {
     setConfig({
       customOrder: newFileList.map((el) => el.File?.path || el.Directory.path),
     });
   };
-  useDirectoryWatch(directoryPath, onFileChange);
+  const onMove = async (from: string, pathTo: string) => {
+    const name = basename(from);
+    const to = join(pathTo, name);
+    await copyFile(from, to);
+    await removeFile(from);
+  };
 
   return (
     <SideBarStyled>
@@ -128,7 +137,7 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
               cursor: "pointer",
             }}
             onClick={() => {
-              onLoadDir(dirname(directoryPath));
+              set({ currentDirectoryPath: dirname(directoryPath) });
             }}
           >
             <FiArrowLeft />
@@ -143,11 +152,13 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
             forType="file"
             elements={orderedFileList}
             onSortChange={onSortChange}
+            onCombine={onMove}
             render={(element) => (
               <FileStyled
                 onClick={() => {
-                  if (element.File) onOpen?.(element.File.path);
-                  if (element.Directory) onLoadDir(element.Directory.path);
+                  if (element.File) set({ currentFilePath: element.File.path });
+                  if (element.Directory)
+                    set({ currentDirectoryPath: element.Directory.path });
                 }}
                 selected={element.File?.path == filePath}
               >

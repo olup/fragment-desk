@@ -1,5 +1,10 @@
 import { useStore } from "hooks/store";
-import { styled } from "theme";
+import { keyframes, styled } from "theme";
+
+const scaleIn = keyframes({
+  "0%": { opacity: 0, transform: "scale(.9)" },
+  "100%": { opacity: 1, transform: "scale(1)" },
+});
 
 const InfoBoxStyled = styled("div", {
   padding: 20,
@@ -10,6 +15,7 @@ const InfoBoxStyled = styled("div", {
   top: 29,
   right: 20,
   fontFamily: "Monserrat",
+  animation: `.2s ${scaleIn} ease-out`,
 });
 export const InfoBox = () => {
   const content = useStore((s) => s.content);

@@ -1,9 +1,10 @@
 import { appWindow } from "@tauri-apps/api/window";
 import { useStore } from "hooks/store";
+import { useFs } from "hooks/useFs";
 import { basename } from "path";
 import { FC } from "react";
-import { FiMenu, FiSidebar } from "react-icons/fi";
 import { AiOutlineMenu } from "react-icons/ai";
+import { FiSidebar } from "react-icons/fi";
 import {
   VscChromeClose,
   VscChromeMaximize,
@@ -13,7 +14,7 @@ import {
 import { styled } from "theme";
 import { removeExt } from "utils";
 import { InfoBox } from "./InfoBox";
-import { Spacer } from "./ui/Spacer";
+import { Content, Item, Menu, Trigger } from "./ui/Menu";
 
 const TopBarContainer = styled("div", {
   fontFamily: "Montserrat",
@@ -44,18 +45,28 @@ const TopIconLeft = styled("div", {
   },
 });
 const TopIconRight = styled(TopIconLeft, {
-  marginLeft: 0,
-  marginRight: 10,
+  marginLeft: 10,
+  marginRight: 0,
 });
 
 export const TopBar: FC = () => {
   const [showSide, filePath] = useStore((s) => [s.showSide, s.currentFilePath]);
   const showInfo = useStore((s) => s.showInfo);
   const set = useStore((s) => s.set);
+  const { openFile, openDir } = useFs();
   return (
     <TopBarContainer className="titlebar" data-tauri-drag-region="">
       <div style={{ flex: 1 }} data-tauri-drag-region="">
-        <TopIconLeft as={AiOutlineMenu} />
+        <Menu>
+          <Trigger>
+            <TopIconLeft as={AiOutlineMenu} />
+          </Trigger>
+          <Content sideOffset={10}>
+            <Item onSelect={openFile}>Open File</Item>
+            <Item onSelect={openDir}>Open Directory</Item>
+          </Content>
+        </Menu>
+
         <TopIconLeft
           as={FiSidebar}
           onClick={() => set({ showSide: !showSide })}

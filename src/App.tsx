@@ -4,7 +4,7 @@ import { SideBar } from "components/SideBar";
 import { Box, Flex } from "components/ui/Layout";
 import { ScrollArea } from "components/ui/ScrollArea";
 import { useStore } from "hooks/store";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { reset } from "stitches-reset";
 import { global, styled } from "theme";
@@ -40,20 +40,29 @@ function App() {
   const showSide = useStore((s) => s.showSide);
   const set = useStore((s) => s.set);
 
-  const onLoad = useCallback(async (path?: string) => {
+  const [loading, setLoading] = useState(false);
+
+  const loadFile = useCallback(async (path?: string) => {
     if (!path) return;
+    setLoading(true);
     try {
       const file = await invoke<File>("open_file", { path });
       set({ currentFilePath: path, content: file.content || "" });
     } catch (err) {
       alert("An error happened opening " + filePath);
     }
+    setLoading(false);
   }, []);
 
   const onSave = async (contents: string) => {
     if (!filePath) return;
     await writeFile({ path: filePath, contents });
   };
+
+  useEffect(() => {
+    if (!filePath) return;
+    loadFile(filePath);
+  }, [filePath]);
 
   useHotkeys("ctrl+s", () => {
     onSave(content);
@@ -79,7 +88,7 @@ function App() {
                 right: 0,
               }}
             >
-              <SideBar onOpen={onLoad} />
+              <SideBar />
             </div>
           </div>
         )}
@@ -100,11 +109,13 @@ function App() {
           >
             <ScrollArea>
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-                <Editor
-                  key={filePath}
-                  initialValue={content}
-                  onSave={(c) => onSave(c)}
-                />
+                {!loading && (
+                  <Editor
+                    key={filePath}
+                    initialValue={content}
+                    onSave={(c) => onSave(c)}
+                  />
+                )}
               </div>
             </ScrollArea>
           </div>
