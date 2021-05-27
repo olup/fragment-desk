@@ -14,6 +14,7 @@ export type Directory = {
 };
 
 export type FsElement = {
-  File?: File;
-  Directory?: Directory;
+  File: File;
+} & {
+  Directory: Directory;
 };

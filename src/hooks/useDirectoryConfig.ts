@@ -1,5 +1,7 @@
 import { readTextFile, writeFile } from "@tauri-apps/api/fs";
+import { stringify } from "querystring";
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce/lib";
 
 type Config = {
   customOrder: string[];
@@ -10,15 +12,19 @@ const defaultConfig: Config = {
 };
 
 export const useDirectoryConfig = (path: string) => {
-  console.log(path);
   const [config, setConfigRaw] = useState<Config>(defaultConfig);
+  const writeDebounce = useDebouncedCallback(
+    (path: string, contents: string) =>
+      writeFile({
+        path,
+        contents,
+      }),
+    1000
+  );
 
   const setConfig = (configPatch: Partial<Config>) => {
     const newConfig = { ...config, ...configPatch };
-    writeFile({
-      path: path + "/.fragment",
-      contents: JSON.stringify(newConfig),
-    });
+    writeDebounce(path + "/.fragment", JSON.stringify(newConfig));
     setConfigRaw(newConfig);
   };
 

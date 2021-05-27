@@ -43,9 +43,7 @@ function App() {
   const onLoad = useCallback(async (path?: string) => {
     if (!path) return;
     try {
-      console.log("loading...");
       const file = await invoke<File>("open_file", { path });
-      console.log(file);
       set({ currentFilePath: path, content: file.content || "" });
     } catch (err) {
       alert("An error happened opening " + filePath);

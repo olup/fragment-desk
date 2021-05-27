@@ -1,6 +1,8 @@
 import { register } from "@tauri-apps/api/globalShortcut";
 import { AppStoreProvider } from "hooks/appStore";
 import React from "react";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { TopBar } from "./components/TopBar";
@@ -9,7 +11,9 @@ import reportWebVitals from "./reportWebVitals";
 ReactDOM.render(
   <React.StrictMode>
     <AppStoreProvider>
-      <App />
+      <DndProvider backend={HTML5Backend}>
+        <App />
+      </DndProvider>
     </AppStoreProvider>
   </React.StrictMode>,
   document.getElementById("root")

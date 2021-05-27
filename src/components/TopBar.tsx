@@ -2,7 +2,8 @@ import { appWindow } from "@tauri-apps/api/window";
 import { useStore } from "hooks/store";
 import { basename } from "path";
 import { FC } from "react";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiSidebar } from "react-icons/fi";
+import { AiOutlineMenu } from "react-icons/ai";
 import {
   VscChromeClose,
   VscChromeMaximize,
@@ -34,13 +35,17 @@ const TopBarContainer = styled("div", {
   boxSizing: "border-box",
 });
 
-const TopIcon = styled("div", {
-  marginLeft: 10,
+const TopIconLeft = styled("div", {
+  marginRight: 10,
   cursor: "pointer",
   opacity: 0.5,
   "&:hover": {
     opacity: 1,
   },
+});
+const TopIconRight = styled(TopIconLeft, {
+  marginLeft: 0,
+  marginRight: 10,
 });
 
 export const TopBar: FC = () => {
@@ -50,7 +55,9 @@ export const TopBar: FC = () => {
   return (
     <TopBarContainer className="titlebar" data-tauri-drag-region="">
       <div style={{ flex: 1 }} data-tauri-drag-region="">
-        <FiMenu
+        <TopIconLeft as={AiOutlineMenu} />
+        <TopIconLeft
+          as={FiSidebar}
           onClick={() => set({ showSide: !showSide })}
           style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
         />
@@ -60,10 +67,19 @@ export const TopBar: FC = () => {
         style={{ flex: 1, justifyContent: "flex-end", display: "flex" }}
         data-tauri-drag-region=""
       >
-        <TopIcon as={VscInfo} onClick={() => set({ showInfo: !showInfo })} />
-        <TopIcon as={VscChromeMinimize} onClick={() => appWindow.minimize()} />
-        <TopIcon as={VscChromeMaximize} onClick={() => appWindow.maximize()} />
-        <TopIcon as={VscChromeClose} onClick={() => appWindow.close()} />
+        <TopIconRight
+          as={VscInfo}
+          onClick={() => set({ showInfo: !showInfo })}
+        />
+        <TopIconRight
+          as={VscChromeMinimize}
+          onClick={() => appWindow.minimize()}
+        />
+        <TopIconRight
+          as={VscChromeMaximize}
+          onClick={() => appWindow.maximize()}
+        />
+        <TopIconRight as={VscChromeClose} onClick={() => appWindow.close()} />
       </div>
       {showInfo && <InfoBox />}
     </TopBarContainer>

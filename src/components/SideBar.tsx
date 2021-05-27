@@ -1,21 +1,17 @@
-import { open } from "@tauri-apps/api/dialog";
-import { listen } from "@tauri-apps/api/event";
-import { writeFile } from "@tauri-apps/api/fs";
 import { invoke } from "@tauri-apps/api/tauri";
-import { format } from "date-fns";
-import { useAppStore } from "hooks/appStore";
 import { useStore } from "hooks/store";
 import { useDirectoryConfig } from "hooks/useDirectoryConfig";
 import { useDirectoryWatch } from "hooks/useDirectoryWatch";
-import { nanoid } from "nanoid";
-import { dirname, relative } from "path";
+import { keyBy } from "lodash";
+import { basename, dirname } from "path";
 import { FC, useCallback, useEffect, useState } from "react";
-import { FiArrowLeft, FiFile, FiFilePlus, FiFolder } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
+import { VscFile, VscFiles } from "react-icons/vsc";
 import { styled } from "theme";
 import { FsElement } from "types";
 import { removeExt } from "utils";
+import { DraggableItem, DraggableList } from "./DraggableList";
 import { Icon } from "./ui/Icon";
-import { Flex } from "./ui/Layout";
 import { ScrollArea } from "./ui/ScrollArea";
 
 const SideBarStyled = styled("div", {
@@ -26,18 +22,20 @@ const SideBarStyled = styled("div", {
   fontFamily: "Monserrat",
 });
 
-const Separator = styled("div", {
-  margin: "0px 20px",
-  height: 1,
-  backgroundColor: "#eee",
+const Title = styled("div", {
+  padding: 10,
+  borderBottom: "1px solid #eee",
+  display: "flex",
+  justifyContent: "center",
+  position: "relative",
 });
 
 const FileStyled = styled("div", {
   display: "Flex",
   width: "100%",
   userSelect: "none",
-  // borderBottom: "1px solid #ccc",
-  // borderTop: "1px solid #ccc",
+  borderBottom: "1px solid #eee",
+  borderTop: "1px solid #eee",
   padding: 10,
   boxSizing: "border-box",
   cursor: "pointer",
@@ -45,6 +43,7 @@ const FileStyled = styled("div", {
   position: "relative",
   zIndex: 0,
   opacity: 0.5,
+  backgroundColor: "#fff",
   "&:hover": {
     opacity: 1,
 
@@ -67,20 +66,6 @@ const FileContentStyled = styled("div", {
   opacity: 0.5,
 });
 
-const MainButton = styled("div", {
-  flex: 1,
-  display: "flex",
-  height: 50,
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  fontSize: 16,
-  opacity: 0.5,
-  "&:hover": {
-    opacity: 1,
-  },
-});
-
 export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
   onOpen,
 }) => {
@@ -90,23 +75,25 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
   const set = useStore((s) => s.set);
 
   const [fileList, setFileList] = useState<FsElement[]>([]);
+  const [{ customOrder }, setConfig] = useDirectoryConfig(directoryPath);
 
-  const onOpenFile = async () => {
-    const newPath = (await open({
-      multiple: false,
-      //defaultPath: filePath || undefined,
-    })) as string;
-    onOpen?.(newPath);
-  };
+  const fileListWithPathAndId = fileList.map((f) => ({
+    ...f,
+    path: f.Directory?.path || f.File.path,
+    id: f.Directory?.path || f.File.path,
+  }));
+  const fileByName = keyBy(fileListWithPathAndId, "path");
+  const orderedFileList = [
+    ...customOrder.map((path) => fileByName[path]).filter(Boolean),
+    ...fileListWithPathAndId.filter((f) => !customOrder.includes(f.path)),
+  ];
 
   const onLoadDir = async (path?: string) => {
     if (!path) return;
     try {
-      console.log("loading...");
       const fileList = await invoke<FsElement[]>("list_dir_files", {
         path,
       });
-      console.log("loaded");
       setFileList(fileList);
       set({ currentDirectoryPath: path });
     } catch (err) {
@@ -114,71 +101,49 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
     }
   };
 
-  const onOpenDir = async () => {
-    // unwatch previous directory
-    if (directoryPath) invoke("unwatch", { path: directoryPath });
-
-    const path = (await open({
-      multiple: false,
-      directory: true,
-    })) as string;
-    set({ currentProjectPath: path });
-    onLoadDir(path);
-
-    // start watching project
-    invoke("watch", { path });
-  };
-
-  const onCreateFile = async () => {
-    const path = `${directoryPath}/${format(new Date(), "yyyy-MM-dd")}-${nanoid(
-      3
-    )}.md`;
-    await writeFile({ path, contents: "" });
-    onOpen?.(path);
-  };
-
   useEffect(() => {
     if (directoryPath) onLoadDir(directoryPath);
   }, []);
 
-  const [config] = useDirectoryConfig(directoryPath);
   const onFileChange = useCallback(
     (path: string) => onLoadDir(directoryPath),
     [directoryPath]
   );
+
+  const onSortChange = (newFileList: FsElement[]) => {
+    setConfig({
+      customOrder: newFileList.map((el) => el.File?.path || el.Directory.path),
+    });
+  };
   useDirectoryWatch(directoryPath, onFileChange);
 
   return (
     <SideBarStyled>
-      <div style={{ borderBottom: "1px solid #ccc", display: "flex" }}>
-        <MainButton onClick={onOpenFile}>
-          <Icon as={FiFile} />
-        </MainButton>
-        <MainButton onClick={onOpenDir}>
-          <Icon as={FiFolder} />
-        </MainButton>
-        <MainButton>
-          <Icon as={FiFilePlus} onClick={onCreateFile} />
-        </MainButton>
-      </div>
-
-      {directoryPath !== projectPath && (
-        <FileStyled
-          style={{ borderBottom: "1px solid #ccc" }}
-          onClick={() => {
-            onLoadDir(dirname(directoryPath));
-          }}
-        >
-          <div>
+      <Title>
+        {directoryPath !== projectPath && (
+          <div
+            style={{
+              position: "absolute",
+              left: 10,
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              onLoadDir(dirname(directoryPath));
+            }}
+          >
             <FiArrowLeft />
           </div>
-        </FileStyled>
-      )}
+        )}
+        <div>{basename(directoryPath)}</div>
+      </Title>
 
       <div style={{ flex: 1, minHeight: 0 }}>
         <ScrollArea>
-          {fileList?.map((element) => (
-            <>
+          <DraggableList
+            forType="file"
+            elements={orderedFileList}
+            onSortChange={onSortChange}
+            render={(element) => (
               <FileStyled
                 onClick={() => {
                   if (element.File) onOpen?.(element.File.path);
@@ -187,7 +152,7 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
                 selected={element.File?.path == filePath}
               >
                 <div style={{ marginRight: 10 }}>
-                  <Icon as={element.File ? FiFile : FiFolder} />
+                  <Icon as={element.File ? VscFile : VscFiles} />
                 </div>
                 <div>
                   <div style={{ marginBottom: 5 }}>
@@ -206,9 +171,8 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
                   )}
                 </div>
               </FileStyled>
-              <Separator />
-            </>
-          ))}
+            )}
+          ></DraggableList>
         </ScrollArea>
       </div>
     </SideBarStyled>
