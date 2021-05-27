@@ -1,12 +1,15 @@
 import { open } from "@tauri-apps/api/dialog";
+import { listen } from "@tauri-apps/api/event";
 import { writeFile } from "@tauri-apps/api/fs";
 import { invoke } from "@tauri-apps/api/tauri";
 import { format } from "date-fns";
 import { useAppStore } from "hooks/appStore";
 import { useStore } from "hooks/store";
+import { useDirectoryConfig } from "hooks/useDirectoryConfig";
+import { useDirectoryWatch } from "hooks/useDirectoryWatch";
 import { nanoid } from "nanoid";
 import { dirname, relative } from "path";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { FiArrowLeft, FiFile, FiFilePlus, FiFolder } from "react-icons/fi";
 import { styled } from "theme";
 import { FsElement } from "types";
@@ -23,12 +26,18 @@ const SideBarStyled = styled("div", {
   fontFamily: "Monserrat",
 });
 
+const Separator = styled("div", {
+  margin: "0px 20px",
+  height: 1,
+  backgroundColor: "#eee",
+});
+
 const FileStyled = styled("div", {
   display: "Flex",
   width: "100%",
   userSelect: "none",
-  borderBottom: "1px solid #ccc",
-  borderTop: "1px solid #ccc",
+  // borderBottom: "1px solid #ccc",
+  // borderTop: "1px solid #ccc",
   padding: 10,
   boxSizing: "border-box",
   cursor: "pointer",
@@ -46,7 +55,7 @@ const FileStyled = styled("div", {
       true: {
         opacity: 1,
 
-        boxShadow: "5px 0 0 #2d7be0 inset",
+        boxShadow: "3px 0 0 #2d7be0 inset",
         zIndex: 10,
       },
     },
@@ -106,12 +115,18 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
   };
 
   const onOpenDir = async () => {
+    // unwatch previous directory
+    if (directoryPath) invoke("unwatch", { path: directoryPath });
+
     const path = (await open({
       multiple: false,
       directory: true,
     })) as string;
     set({ currentProjectPath: path });
     onLoadDir(path);
+
+    // start watching project
+    invoke("watch", { path });
   };
 
   const onCreateFile = async () => {
@@ -119,13 +134,19 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
       3
     )}.md`;
     await writeFile({ path, contents: "" });
-    await onLoadDir(directoryPath);
     onOpen?.(path);
   };
 
   useEffect(() => {
     if (directoryPath) onLoadDir(directoryPath);
   }, []);
+
+  const [config] = useDirectoryConfig(directoryPath);
+  const onFileChange = useCallback(
+    (path: string) => onLoadDir(directoryPath),
+    [directoryPath]
+  );
+  useDirectoryWatch(directoryPath, onFileChange);
 
   return (
     <SideBarStyled>
@@ -143,6 +164,7 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
 
       {directoryPath !== projectPath && (
         <FileStyled
+          style={{ borderBottom: "1px solid #ccc" }}
           onClick={() => {
             onLoadDir(dirname(directoryPath));
           }}
@@ -152,36 +174,40 @@ export const SideBar: FC<{ onOpen?: (path: string) => void }> = ({
           </div>
         </FileStyled>
       )}
+
       <div style={{ flex: 1, minHeight: 0 }}>
         <ScrollArea>
           {fileList?.map((element) => (
-            <FileStyled
-              onClick={() => {
-                if (element.File) onOpen?.(element.File.path);
-                if (element.Directory) onLoadDir(element.Directory.path);
-              }}
-              selected={element.File?.path == filePath}
-            >
-              <div style={{ marginRight: 10 }}>
-                <Icon as={element.File ? FiFile : FiFolder} />
-              </div>
-              <div>
-                <div style={{ marginBottom: 5 }}>
-                  {element.Directory?.name ||
-                    removeExt(element.File?.name || "")}
+            <>
+              <FileStyled
+                onClick={() => {
+                  if (element.File) onOpen?.(element.File.path);
+                  if (element.Directory) onLoadDir(element.Directory.path);
+                }}
+                selected={element.File?.path == filePath}
+              >
+                <div style={{ marginRight: 10 }}>
+                  <Icon as={element.File ? FiFile : FiFolder} />
                 </div>
-                {element.File && (
-                  <FileContentStyled>
-                    {element.File?.preview?.slice(0, 100)}
-                  </FileContentStyled>
-                )}
-                {element.Directory && (
-                  <FileContentStyled>
-                    {element.Directory?.children_count} items
-                  </FileContentStyled>
-                )}
-              </div>
-            </FileStyled>
+                <div>
+                  <div style={{ marginBottom: 5 }}>
+                    {element.Directory?.name ||
+                      removeExt(element.File?.name || "")}
+                  </div>
+                  {element.File && (
+                    <FileContentStyled>
+                      {element.File?.preview?.slice(0, 100)}
+                    </FileContentStyled>
+                  )}
+                  {element.Directory && (
+                    <FileContentStyled>
+                      {element.Directory?.children_count} items
+                    </FileContentStyled>
+                  )}
+                </div>
+              </FileStyled>
+              <Separator />
+            </>
           ))}
         </ScrollArea>
       </div>

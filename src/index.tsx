@@ -1,3 +1,4 @@
+import { register } from "@tauri-apps/api/globalShortcut";
 import { AppStoreProvider } from "hooks/appStore";
 import React from "react";
 import ReactDOM from "react-dom";

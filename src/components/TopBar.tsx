@@ -15,6 +15,7 @@ import { InfoBox } from "./InfoBox";
 import { Spacer } from "./ui/Spacer";
 
 const TopBarContainer = styled("div", {
+  fontFamily: "Montserrat",
   fontSize: 12,
   // position: "fixed",
   top: 0,
@@ -27,8 +28,8 @@ const TopBarContainer = styled("div", {
   userSelect: "none",
   backgroundColor: "#fff",
   zIndex: 100,
-  paddingLeft: 5,
-  paddingRight: 5,
+  paddingLeft: 10,
+  paddingRight: 10,
   borderBottom: "1px solid #ccc",
   boxSizing: "border-box",
 });
@@ -48,17 +49,22 @@ export const TopBar: FC = () => {
   const set = useStore((s) => s.set);
   return (
     <TopBarContainer className="titlebar" data-tauri-drag-region="">
-      <FiMenu
-        onClick={() => set({ showSide: !showSide })}
-        style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
-      />
-      <Spacer />
+      <div style={{ flex: 1 }} data-tauri-drag-region="">
+        <FiMenu
+          onClick={() => set({ showSide: !showSide })}
+          style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
+        />
+      </div>
       <div>{filePath ? removeExt(basename(filePath)) : "Fragment"}</div>
-      <Spacer />
-      <TopIcon as={VscInfo} onClick={() => set({ showInfo: !showInfo })} />
-      <TopIcon as={VscChromeMinimize} onClick={() => appWindow.minimize()} />
-      <TopIcon as={VscChromeMaximize} onClick={() => appWindow.maximize()} />
-      <TopIcon as={VscChromeClose} onClick={() => appWindow.close()} />
+      <div
+        style={{ flex: 1, justifyContent: "flex-end", display: "flex" }}
+        data-tauri-drag-region=""
+      >
+        <TopIcon as={VscInfo} onClick={() => set({ showInfo: !showInfo })} />
+        <TopIcon as={VscChromeMinimize} onClick={() => appWindow.minimize()} />
+        <TopIcon as={VscChromeMaximize} onClick={() => appWindow.maximize()} />
+        <TopIcon as={VscChromeClose} onClick={() => appWindow.close()} />
+      </div>
       {showInfo && <InfoBox />}
     </TopBarContainer>
   );

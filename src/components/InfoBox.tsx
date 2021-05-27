@@ -19,12 +19,15 @@ export const InfoBox = () => {
     <InfoBoxStyled>
       <div style={{ display: "flex" }}>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, color: "#2d7be0" }}>{wc}</div>{" "}
-          <div style={{ textTransform: "uppercase" }}>Words</div>
+          <div style={{ fontSize: 16, color: "#2d7be0" }}>{wc}</div>{" "}
+          <div style={{ textTransform: "uppercase", fontSize: 12 }}>Words</div>
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, color: "#2d7be0" }}>{cc}</div>
-          <div style={{ textTransform: "uppercase" }}> Characters</div>
+          <div style={{ fontSize: 16, color: "#2d7be0" }}>{cc}</div>
+          <div style={{ textTransform: "uppercase", fontSize: 12 }}>
+            {" "}
+            Characters
+          </div>
         </div>
       </div>
     </InfoBoxStyled>

@@ -5,27 +5,19 @@
 
 extern crate serde;
 
+use notify::{Event, INotifyWatcher, RecommendedWatcher, RecursiveMode, Watcher};
+use std::sync::Mutex;
 use std::{convert::TryFrom, error::Error, fmt::Display};
-use std::{fs, ptr::null, time::UNIX_EPOCH};
-
-use std::time::Instant;
-
-use serde::Serialize;
-use tauri::InvokeError;
+use std::{fs, time::UNIX_EPOCH};
+use tauri::{Manager, State};
 
 #[derive(Debug, serde::Serialize)]
-enum MyError {
-  FooError,
-}
+enum MyError {}
+
 impl Display for MyError {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     write!(f, "my error")
   }
-}
-#[derive(serde::Serialize)]
-enum FsElementGenre {
-  File,
-  Dir,
 }
 
 #[derive(serde::Serialize)]
@@ -115,10 +107,60 @@ async fn open_file(path: String) -> File {
   }(path)
   .unwrap();
 }
+struct Watch(Mutex<INotifyWatcher>);
+
+#[tauri::command]
+async fn watch(path: String, watcher: State<'_, Watch>) -> Result<(), ()> {
+  println!("Wathing {}", &path);
+  watcher
+    .0
+    .lock()
+    .unwrap()
+    .watch(path, RecursiveMode::Recursive)
+    .unwrap();
+
+  Ok(())
+}
+
+#[tauri::command]
+async fn unwatch(path: String, watcher: State<'_, Watch>) -> Result<(), ()> {
+  println!("Stop wathing {}", &path);
+
+  watcher.0.lock().unwrap().unwatch(path).unwrap();
+
+  Ok(())
+}
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![list_dir_files, open_file])
+    .setup(|app| {
+      // attach a file watcher at app setup
+      let handle = app.handle();
+
+      let w = Watcher::new_immediate(move |res: Result<Event, _>| match res {
+        Ok(event) => {
+          handle
+            .emit_all("file_changed", event.paths[0].to_str().unwrap().to_string())
+            .unwrap();
+        }
+        Err(e) => {
+          println!("watch error: {:?}", e);
+        }
+      })
+      .unwrap();
+
+      let watcher: Mutex<RecommendedWatcher> = Mutex::new(w);
+
+      app.manage(Watch(watcher));
+
+      Ok(())
+    })
+    .invoke_handler(tauri::generate_handler![
+      list_dir_files,
+      open_file,
+      watch,
+      unwatch
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

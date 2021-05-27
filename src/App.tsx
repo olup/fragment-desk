@@ -4,7 +4,7 @@ import { SideBar } from "components/SideBar";
 import { Box, Flex } from "components/ui/Layout";
 import { ScrollArea } from "components/ui/ScrollArea";
 import { useStore } from "hooks/store";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { reset } from "stitches-reset";
 import { global, styled } from "theme";
@@ -58,11 +58,9 @@ function App() {
   };
 
   useHotkeys("ctrl+s", () => {
-    console.log("key");
     onSave(content);
   });
 
-  // if (isLoading) return null;
   return (
     <AppContainer>
       <TopBar />
