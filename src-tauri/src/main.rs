@@ -5,7 +5,7 @@
 
 extern crate serde;
 
-use notify::{Event, INotifyWatcher, RecommendedWatcher, RecursiveMode, Watcher};
+use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::sync::Mutex;
 use std::{convert::TryFrom, error::Error, fmt::Display};
 use std::{fs, time::UNIX_EPOCH};
@@ -107,7 +107,7 @@ async fn open_file(path: String) -> File {
   }(path)
   .unwrap();
 }
-struct Watch(Mutex<INotifyWatcher>);
+struct Watch(Mutex<RecommendedWatcher>);
 
 #[tauri::command]
 async fn watch(path: String, watcher: State<'_, Watch>) -> Result<(), ()> {
