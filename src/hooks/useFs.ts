@@ -15,22 +15,13 @@ export const useFs = () => {
     })) as string;
     set({ currentProjectPath: path, currentDirectoryPath: path });
   };
-
-  const createFile = async () => {
-    const path = `${currentDirectoryPath}/${format(
-      new Date(),
-      "yyyy-MM-dd"
-    )}-${nanoid(3)}.md`;
-    await writeFile({ path, contents: "" });
-  };
-
   const openFile = async () => {
     const path = (await open({
       multiple: false,
       defaultPath: currentDirectoryPath,
     })) as string;
-    set({ currentFilePath: path });
+    set({ currentFilePaths: [path] });
   };
 
-  return { openDir, createFile, openFile };
+  return { openDir, openFile };
 };

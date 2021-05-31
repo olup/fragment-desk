@@ -94,11 +94,6 @@ export const Editor: FC<EditorProps> = ({
     };
   }, [editor]);
 
-  //bind events to states
-  useEffect(() => {
-    set({ content: state });
-  }, [state]);
-
   return (
     <EditoContainer>
       <div ref={editor} />

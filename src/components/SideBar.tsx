@@ -80,7 +80,7 @@ const EmptyMessage = styled("div", {
 });
 
 export const SideBar: FC = () => {
-  const filePath = useStore((s) => s.currentFilePath);
+  const filePaths = useStore((s) => s.currentFilePaths);
   const directoryPath = useStore((s) => s.currentDirectoryPath);
   const projectPath = useStore((s) => s.currentProjectPath);
   const showAddItem = useStore((s) => s.showAddItem);
@@ -152,7 +152,7 @@ export const SideBar: FC = () => {
         contents: "",
         path,
       });
-      set({ showAddItem: false, currentFilePath: path });
+      set({ showAddItem: false, currentFilePaths: [path] });
     }
 
     if (type === "collection") {
@@ -166,7 +166,8 @@ export const SideBar: FC = () => {
   ) => {
     if (type === "file") {
       await removeFile(path);
-      if (filePath === path) set({ currentFilePath: "" });
+      if (filePaths.includes(path))
+        set({ currentFilePaths: filePaths.filter((f) => f !== path) });
     }
     if (type === "collection") {
       await removeDir(path, { recursive: true });
@@ -177,7 +178,10 @@ export const SideBar: FC = () => {
     const newPath = join(dirname(path), name) + extname(path);
     await renameFile(path, join(dirname(path), name) + extname(path));
     // update present selected document
-    if (filePath === path) set({ currentFilePath: newPath });
+    if (filePaths.includes(path))
+      set({
+        currentFilePaths: filePaths.map((f) => (f === path ? newPath : f)),
+      });
     // update sorting list
     if (customOrder.includes(path)) {
       setConfig({
@@ -261,10 +265,22 @@ export const SideBar: FC = () => {
                     : `${Directory?.children_count} items`
                 }
                 type={!!File ? "file" : "collection"}
-                selected={File?.path === filePath}
+                selected={filePaths.includes(File?.path)}
                 onSelect={() => {
-                  if (File) set({ currentFilePath: File.path });
+                  if (File) set({ currentFilePaths: [File.path] });
                   if (Directory) set({ currentDirectoryPath: Directory.path });
+                }}
+                onMutliSelect={() => {
+                  if (File) {
+                    if (!filePaths.includes(File.path))
+                      set({ currentFilePaths: [...filePaths, File.path] });
+                    else
+                      set({
+                        currentFilePaths: filePaths.filter(
+                          (p) => p !== File.path
+                        ),
+                      });
+                  }
                 }}
                 onDelete={() =>
                   onDelete(

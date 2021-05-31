@@ -1,4 +1,3 @@
-import { useStore } from "hooks/store";
 import { keyframes, styled } from "theme";
 
 const scaleIn = keyframes({
@@ -18,7 +17,7 @@ const InfoBoxStyled = styled("div", {
   animation: `.2s ${scaleIn} ease-out`,
 });
 export const InfoBox = () => {
-  const content = useStore((s) => s.content);
+  const content = "";
   const wc = content.split(" ").length;
   const cc = content.length;
   return (

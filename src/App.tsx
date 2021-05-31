@@ -1,20 +1,17 @@
 import { writeFile } from "@tauri-apps/api/fs";
-import { invoke } from "@tauri-apps/api/tauri";
+import { FileEditor } from "components/FileEditor";
 import { SideBar } from "components/SideBar";
-import { Box, Flex } from "components/ui/Layout";
+import { Box } from "components/ui/Layout";
 import { ScrollArea } from "components/ui/ScrollArea";
 import { useStore } from "hooks/store";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { reset } from "stitches-reset";
 import { global, styled } from "theme";
-import { File } from "types";
-import { Editor } from "./components/Editor";
-import { TopBar } from "./components/TopBar";
-
-import "../node_modules/@fontsource/ubuntu-mono";
-import "../node_modules/@fontsource/montserrat";
 import "../node_modules/@fontsource/merriweather/latin-300.css";
+import "../node_modules/@fontsource/montserrat";
+import "../node_modules/@fontsource/ubuntu-mono";
+import { TopBar } from "./components/TopBar";
 
 const globalStyles = global(reset);
 const globalStylesExtension = global({
@@ -36,38 +33,8 @@ function App() {
   globalStyles();
   globalStylesExtension();
 
-  const filePath = useStore((s) => s.currentFilePath);
-  const content = useStore((s) => s.content);
+  const filePaths = useStore((s) => s.currentFilePaths);
   const showSide = useStore((s) => s.showSide);
-  const set = useStore((s) => s.set);
-
-  const [loading, setLoading] = useState(false);
-
-  const loadFile = useCallback(async (path?: string) => {
-    if (!path) return;
-    setLoading(true);
-    try {
-      const file = await invoke<File>("open_file", { path });
-      set({ currentFilePath: path, content: file.content || "" });
-    } catch (err) {
-      alert("An error happened opening " + filePath);
-    }
-    setLoading(false);
-  }, []);
-
-  const onSave = async (contents: string) => {
-    if (!filePath) return;
-    await writeFile({ path: filePath, contents });
-  };
-
-  useEffect(() => {
-    if (!filePath) return;
-    loadFile(filePath);
-  }, [filePath]);
-
-  useHotkeys("ctrl+s", () => {
-    onSave(content);
-  });
 
   return (
     <AppContainer>
@@ -110,13 +77,21 @@ function App() {
           >
             <ScrollArea>
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-                {!loading && filePath && (
-                  <Editor
-                    key={filePath}
-                    initialValue={content}
-                    onSave={(c) => onSave(c)}
-                  />
-                )}
+                {filePaths?.map((path, index) => (
+                  <>
+                    <FileEditor path={path} key={path} />
+                    {index !== filePaths.length - 1 && (
+                      <div
+                        style={{
+                          height: 0,
+                          width: "100%",
+                          borderTop: "2px dashed #eee",
+                          margin: "10px 0",
+                        }}
+                      />
+                    )}
+                  </>
+                ))}
               </div>
             </ScrollArea>
           </div>

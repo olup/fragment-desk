@@ -6,8 +6,7 @@ export const useStore = create(
   persist(
     combine(
       {
-        content: "",
-        currentFilePath: "",
+        currentFilePaths: [] as string[],
         currentProjectPath: "",
         currentDirectoryPath: "",
 

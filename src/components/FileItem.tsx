@@ -1,17 +1,15 @@
-import { FC, useState, KeyboardEvent, useCallback, FocusEvent } from "react";
-import { HiDotsVertical } from "react-icons/hi";
+import { FC, FocusEvent, KeyboardEvent, useCallback, useState } from "react";
+import { GrDrag } from "react-icons/gr";
 import {
   VscEdit,
   VscFile,
   VscFiles,
   VscKebabVertical,
-  VscRemove,
   VscTrash,
 } from "react-icons/vsc";
 import { styled } from "theme";
-import { removeExt } from "utils";
 import { Icon } from "./ui/Icon";
-import { Content, Menu, Trigger, Item, ItemIcon } from "./ui/Menu";
+import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
 
 const Reveal = styled("div", {
   opacity: 0,
@@ -31,12 +29,24 @@ const FileStyled = styled("div", {
   zIndex: 0,
   opacity: 0.5,
   backgroundColor: "#fff",
+  ".hover": {
+    display: "none",
+  },
+
   "&:hover": {
     opacity: 1,
     [`${Reveal}`]: {
       opacity: 1,
     },
     zIndex: 10,
+
+    ".hover": {
+      display: "block",
+    },
+
+    ".idle": {
+      display: "none",
+    },
   },
   variants: {
     selected: {
@@ -71,6 +81,7 @@ export const FileItem: FC<{
   type: "file" | "collection";
   path: string;
   onSelect?: (path: string) => void;
+  onMutliSelect?: (path: string) => void;
   onDelete?: (path: string) => void;
   onChangeName?: (newName: string, path: string) => void;
   onCancel?: () => void;
@@ -81,6 +92,7 @@ export const FileItem: FC<{
   isEditMode,
   type,
   onSelect,
+  onMutliSelect,
   onDelete,
   path,
   selected,
@@ -111,9 +123,21 @@ export const FileItem: FC<{
   };
 
   return (
-    <FileStyled onClick={() => onSelect?.(path)} selected={selected}>
+    <FileStyled
+      onClick={(e) => {
+        if (e.ctrlKey) {
+          onMutliSelect?.(path);
+        } else onSelect?.(path);
+      }}
+      selected={selected}
+    >
       <div style={{ marginRight: 10 }} ref={dragHandle}>
-        <Icon as={type === "file" ? VscFile : VscFiles} />
+        <Icon className="idle" as={type === "file" ? VscFile : VscFiles} />
+        <Icon
+          className="hover"
+          as={GrDrag}
+          style={{ cursor: "grabbing", opacity: 0.5 }}
+        />
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ marginBottom: 5 }}>

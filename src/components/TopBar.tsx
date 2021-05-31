@@ -60,7 +60,10 @@ const TopIconRight = styled(TopIconLeft, {
 });
 
 export const TopBar: FC = () => {
-  const [showSide, filePath] = useStore((s) => [s.showSide, s.currentFilePath]);
+  const [showSide, filePaths] = useStore((s) => [
+    s.showSide,
+    s.currentFilePaths,
+  ]);
   const showInfo = useStore((s) => s.showInfo);
   const topbarStyle = useStore((s) => s.topbarStyle);
   const set = useStore((s) => s.set);
@@ -97,7 +100,9 @@ export const TopBar: FC = () => {
           style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
         />
       </div>
-      <div>{filePath ? removeExt(basename(filePath)) : "Fragment"}</div>
+      <div>
+        {filePaths?.length ? removeExt(basename(filePaths[0])) : "Fragment"}
+      </div>
       <div
         style={{ flex: 1, justifyContent: "flex-end", display: "flex" }}
         data-tauri-drag-region=""

@@ -116,10 +116,6 @@ export const DraggableItem: FC<{
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
-    previewOptions: {
-      //captureDraggingState: true,
-      offsetX: -50,
-    },
   });
 
   // useEffect(() => {
