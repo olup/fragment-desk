@@ -1,18 +1,26 @@
-import { copyFile, removeFile } from "@tauri-apps/api/fs";
+import {
+  copyFile,
+  createDir,
+  removeDir,
+  removeFile,
+  renameFile,
+  writeFile,
+} from "@tauri-apps/api/fs";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useStore } from "hooks/store";
 import { useDirectoryConfig } from "hooks/useDirectoryConfig";
 import { useDirectoryWatch } from "hooks/useDirectoryWatch";
 import { keyBy } from "lodash";
-import { basename, dirname, join } from "path";
+import { basename, dirname, join, extname } from "path";
 import { FC, useCallback, useEffect, useState } from "react";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiPlus } from "react-icons/fi";
 import { VscFile, VscFiles } from "react-icons/vsc";
 import { styled } from "theme";
 import { FsElement } from "types";
 import { removeExt } from "utils";
 import { DraggableList } from "./DraggableList";
-import { Icon } from "./ui/Icon";
+import { FileItem } from "./FileItem";
+import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
 import { ScrollArea } from "./ui/ScrollArea";
 
 const SideBarStyled = styled("div", {
@@ -62,15 +70,20 @@ const FileStyled = styled("div", {
   },
 });
 
-const FileContentStyled = styled("div", {
-  fontSize: 12,
+const EmptyMessage = styled("div", {
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  padding: 20,
   opacity: 0.5,
+  boxSizing: "border-box",
 });
 
 export const SideBar: FC = () => {
   const filePath = useStore((s) => s.currentFilePath);
   const directoryPath = useStore((s) => s.currentDirectoryPath);
   const projectPath = useStore((s) => s.currentProjectPath);
+  const showAddItem = useStore((s) => s.showAddItem);
   const set = useStore((s) => s.set);
 
   // filelist, order with the config file
@@ -107,7 +120,10 @@ export const SideBar: FC = () => {
   }, [directoryPath]);
 
   const onFileChange = useCallback(
-    (path: string) => onLoadDir(directoryPath),
+    (path: string) => {
+      console.log("change happened on", path);
+      onLoadDir(directoryPath);
+    },
     [directoryPath]
   );
 
@@ -119,12 +135,67 @@ export const SideBar: FC = () => {
       customOrder: newFileList.map((el) => el.File?.path || el.Directory.path),
     });
   };
+
   const onMove = async (from: string, pathTo: string) => {
     const name = basename(from);
     const to = join(pathTo, name);
     await copyFile(from, to);
     await removeFile(from);
   };
+
+  const onAddItem = async (name: string) => {
+    const type = showAddItem;
+
+    if (type === "file") {
+      const path = join(directoryPath, name) + ".md";
+      await writeFile({
+        contents: "",
+        path,
+      });
+      set({ showAddItem: false, currentFilePath: path });
+    }
+
+    if (type === "collection") {
+      await createDir(join(directoryPath, name));
+    }
+  };
+
+  const onDelete = async (
+    path: string,
+    type: "file" | "collection" = "file"
+  ) => {
+    if (type === "file") {
+      await removeFile(path);
+      if (filePath === path) set({ currentFilePath: "" });
+    }
+    if (type === "collection") {
+      await removeDir(path, { recursive: true });
+    }
+  };
+
+  const onRename = async (name: string, path: string) => {
+    const newPath = join(dirname(path), name) + extname(path);
+    await renameFile(path, join(dirname(path), name) + extname(path));
+    // update present selected document
+    if (filePath === path) set({ currentFilePath: newPath });
+    // update sorting list
+    if (customOrder.includes(path)) {
+      setConfig({
+        customOrder: customOrder.map((thisPath) =>
+          thisPath === path ? newPath : thisPath
+        ),
+      });
+    }
+  };
+
+  if (!directoryPath)
+    return (
+      <SideBarStyled>
+        <EmptyMessage>
+          You can open a directory to edit and manage your writing
+        </EmptyMessage>
+      </SideBarStyled>
+    );
 
   return (
     <SideBarStyled>
@@ -144,6 +215,32 @@ export const SideBar: FC = () => {
           </div>
         )}
         <div>{basename(directoryPath)}</div>
+        <div
+          style={{
+            position: "absolute",
+            right: 10,
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            set({ currentDirectoryPath: dirname(directoryPath) });
+          }}
+        >
+          <Menu>
+            <Trigger>
+              <FiPlus />
+            </Trigger>
+            <Content>
+              <Item onSelect={() => set({ showAddItem: "file" })}>
+                <ItemIcon as={VscFile} />
+                Add sheet
+              </Item>
+              <Item onSelect={() => set({ showAddItem: "collection" })}>
+                <ItemIcon as={VscFiles} />
+                Add collection
+              </Item>
+            </Content>
+          </Menu>
+        </div>
       </Title>
 
       <div style={{ flex: 1, minHeight: 0 }}>
@@ -153,37 +250,42 @@ export const SideBar: FC = () => {
             elements={orderedFileList}
             onSortChange={onSortChange}
             onCombine={onMove}
-            render={(element) => (
-              <FileStyled
-                onClick={() => {
-                  if (element.File) set({ currentFilePath: element.File.path });
-                  if (element.Directory)
-                    set({ currentDirectoryPath: element.Directory.path });
+            render={({ File, Directory }, handle) => (
+              <FileItem
+                dragHandle={handle}
+                path={File?.path || Directory.path}
+                name={Directory?.name || removeExt(File?.name || "")}
+                description={
+                  !!File
+                    ? File?.preview?.slice(0, 100)
+                    : `${Directory?.children_count} items`
+                }
+                type={!!File ? "file" : "collection"}
+                selected={File?.path === filePath}
+                onSelect={() => {
+                  if (File) set({ currentFilePath: File.path });
+                  if (Directory) set({ currentDirectoryPath: Directory.path });
                 }}
-                selected={element.File?.path == filePath}
-              >
-                <div style={{ marginRight: 10 }}>
-                  <Icon as={element.File ? VscFile : VscFiles} />
-                </div>
-                <div>
-                  <div style={{ marginBottom: 5 }}>
-                    {element.Directory?.name ||
-                      removeExt(element.File?.name || "")}
-                  </div>
-                  {element.File && (
-                    <FileContentStyled>
-                      {element.File?.preview?.slice(0, 100)}
-                    </FileContentStyled>
-                  )}
-                  {element.Directory && (
-                    <FileContentStyled>
-                      {element.Directory?.children_count} items
-                    </FileContentStyled>
-                  )}
-                </div>
-              </FileStyled>
+                onDelete={() =>
+                  onDelete(
+                    File?.path || Directory.path,
+                    !!File ? "file" : "collection"
+                  )
+                }
+                onChangeName={onRename}
+              />
             )}
           ></DraggableList>
+          {showAddItem && (
+            <FileItem
+              path=""
+              name=""
+              type={showAddItem}
+              isEditMode
+              onChangeName={onAddItem}
+              onCancel={() => set({ showAddItem: false })}
+            />
+          )}
         </ScrollArea>
       </div>
     </SideBarStyled>

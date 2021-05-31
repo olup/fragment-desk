@@ -1,5 +1,28 @@
-import { FC, useRef, useState } from "react";
+import {
+  cloneElement,
+  FC,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from "react-dnd";
+import { getEmptyImage } from "react-dnd-html5-backend";
+import { styled } from "theme";
+
+const DropOver = styled("div", {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "#222",
+  color: "#ccc",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
 
 export const DraggableItem: FC<{
   type: string;
@@ -8,7 +31,19 @@ export const DraggableItem: FC<{
   canCombine?: boolean;
   move?: (id: string, to: number) => void;
   combine?: (fromId: string, toId: string) => void;
-}> = ({ children, type, index, id, move, canCombine, combine }) => {
+  render: (element: any, handle?: any) => ReactNode;
+  element: any;
+}> = ({
+  children,
+  type,
+  index,
+  id,
+  move,
+  canCombine,
+  combine,
+  render,
+  element,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isTargeted, setIsTargeted] = useState(false);
 
@@ -75,25 +110,33 @@ export const DraggableItem: FC<{
 
   if (!isOver && isTargeted) setIsTargeted(false);
 
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging }, drag, preview] = useDrag({
     type: "file",
     item: { id, index },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
+    previewOptions: {
+      //captureDraggingState: true,
+      offsetX: -50,
+    },
   });
 
+  // useEffect(() => {
+  //   preview(getEmptyImage());
+  // }, []);
+
   const opacity = isDragging ? 0 : 1;
-  const borderLeft = isTargeted ? "3px solid #222" : "none";
-  drag(drop(ref));
+  drop(preview(ref));
 
   return (
     <div
       ref={ref}
-      style={{ opacity, borderLeft, boxSizing: "border-box" }}
+      style={{ opacity, boxSizing: "border-box", position: "relative" }}
       data-handler-id={handlerId}
     >
-      {children}
+      {isTargeted && <DropOver>Add sheet to Collection</DropOver>}
+      {render(element, drag)}
     </div>
   );
 };

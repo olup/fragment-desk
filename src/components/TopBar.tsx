@@ -6,15 +6,25 @@ import { FC } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSidebar } from "react-icons/fi";
 import {
+  WiMoonAltFull,
+  WiMoonAltNew,
+  WiMoonAltThirdQuarter,
+  WiMoonFull,
+  WiMoonThirdQuarter,
+} from "react-icons/wi";
+import {
   VscChromeClose,
   VscChromeMaximize,
   VscChromeMinimize,
+  VscFile,
+  VscFolder,
+  VscFolderOpened,
   VscInfo,
 } from "react-icons/vsc";
 import { styled } from "theme";
 import { removeExt } from "utils";
 import { InfoBox } from "./InfoBox";
-import { Content, Item, Menu, Trigger } from "./ui/Menu";
+import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
 
 const TopBarContainer = styled("div", {
   fontFamily: "Montserrat",
@@ -52,18 +62,32 @@ const TopIconRight = styled(TopIconLeft, {
 export const TopBar: FC = () => {
   const [showSide, filePath] = useStore((s) => [s.showSide, s.currentFilePath]);
   const showInfo = useStore((s) => s.showInfo);
+  const topbarStyle = useStore((s) => s.topbarStyle);
   const set = useStore((s) => s.set);
   const { openFile, openDir } = useFs();
   return (
     <TopBarContainer className="titlebar" data-tauri-drag-region="">
       <div style={{ flex: 1 }} data-tauri-drag-region="">
+        {topbarStyle === "macos" && (
+          <>
+            <TopIconLeft as={WiMoonFull} />
+            <TopIconLeft as={WiMoonFull} />
+            <TopIconLeft as={WiMoonFull} />
+          </>
+        )}
         <Menu>
           <Trigger>
             <TopIconLeft as={AiOutlineMenu} />
           </Trigger>
           <Content sideOffset={10}>
-            <Item onSelect={openFile}>Open File</Item>
-            <Item onSelect={openDir}>Open Directory</Item>
+            <Item onSelect={openFile}>
+              <ItemIcon as={VscFile} />
+              Open File
+            </Item>
+            <Item onSelect={openDir}>
+              <ItemIcon as={VscFolderOpened} />
+              Open Directory
+            </Item>
           </Content>
         </Menu>
 
@@ -82,15 +106,22 @@ export const TopBar: FC = () => {
           as={VscInfo}
           onClick={() => set({ showInfo: !showInfo })}
         />
-        <TopIconRight
-          as={VscChromeMinimize}
-          onClick={() => appWindow.minimize()}
-        />
-        <TopIconRight
-          as={VscChromeMaximize}
-          onClick={() => appWindow.maximize()}
-        />
-        <TopIconRight as={VscChromeClose} onClick={() => appWindow.close()} />
+        {topbarStyle === "standard" && (
+          <>
+            <TopIconRight
+              as={VscChromeMinimize}
+              onClick={() => appWindow.minimize()}
+            />
+            <TopIconRight
+              as={VscChromeMaximize}
+              onClick={() => appWindow.maximize()}
+            />
+            <TopIconRight
+              as={VscChromeClose}
+              onClick={() => appWindow.close()}
+            />
+          </>
+        )}
       </div>
       {showInfo && <InfoBox />}
     </TopBarContainer>

@@ -19,9 +19,9 @@ import "../node_modules/@fontsource/merriweather/latin-300.css";
 const globalStyles = global(reset);
 const globalStylesExtension = global({
   body: {
-    "*": {
-      // fontFamily: '"Ubuntu Mono"',
-    },
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    overflow: "hidden",
   },
 });
 
@@ -35,6 +35,7 @@ const AppContainer = styled(Box, {
 function App() {
   globalStyles();
   globalStylesExtension();
+
   const filePath = useStore((s) => s.currentFilePath);
   const content = useStore((s) => s.content);
   const showSide = useStore((s) => s.showSide);
@@ -109,7 +110,7 @@ function App() {
           >
             <ScrollArea>
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-                {!loading && (
+                {!loading && filePath && (
                   <Editor
                     key={filePath}
                     initialValue={content}

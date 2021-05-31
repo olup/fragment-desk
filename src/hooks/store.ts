@@ -13,6 +13,9 @@ export const useStore = create(
 
         showSide: false,
         showInfo: false,
+        showAddItem: false as "file" | "collection" | false,
+
+        topbarStyle: "standard" as "standard" | "macos",
       },
       (set) => ({
         set,
