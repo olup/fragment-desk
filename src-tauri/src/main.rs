@@ -111,7 +111,7 @@ struct Watch(Mutex<RecommendedWatcher>);
 
 #[tauri::command]
 async fn watch(path: String, watcher: State<'_, Watch>) -> Result<(), ()> {
-  println!("Wathing {}", &path);
+  println!("Watching {}", &path);
   watcher
     .0
     .lock()
@@ -124,7 +124,7 @@ async fn watch(path: String, watcher: State<'_, Watch>) -> Result<(), ()> {
 
 #[tauri::command]
 async fn unwatch(path: String, watcher: State<'_, Watch>) -> Result<(), ()> {
-  println!("Stop wathing {}", &path);
+  println!("Stop watching {}", &path);
 
   watcher.0.lock().unwrap().unwatch(path).unwrap();
 

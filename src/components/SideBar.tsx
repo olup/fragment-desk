@@ -13,11 +13,13 @@ import { useDirectoryWatch } from "hooks/useDirectoryWatch";
 import { keyBy } from "lodash";
 import { basename, dirname, join, extname } from "path";
 import { FC, useCallback, useEffect, useState } from "react";
+import { useDrag, useDrop } from "react-dnd";
 import { FiArrowLeft, FiPlus } from "react-icons/fi";
-import { VscFile, VscFiles } from "react-icons/vsc";
+import { VscAdd, VscFile, VscFiles } from "react-icons/vsc";
 import { styled } from "theme";
 import { FsElement } from "types";
-import { removeExt } from "utils";
+import { useDebouncedCallback } from "use-debounce/lib";
+import { orderWith, removeExt } from "utils";
 import { DraggableList } from "./DraggableList";
 import { FileItem } from "./FileItem";
 import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
@@ -105,6 +107,7 @@ export const SideBar: FC = () => {
 
   const onLoadDir = async (path?: string) => {
     if (!path) return;
+    console.log("Reloading " + path);
     try {
       const fileList = await invoke<FsElement[]>("list_dir_files", {
         path,
@@ -115,6 +118,8 @@ export const SideBar: FC = () => {
     }
   };
 
+  const debouncedOnloadDir = useDebouncedCallback(onLoadDir, 200);
+
   useEffect(() => {
     if (directoryPath) onLoadDir(directoryPath);
   }, [directoryPath]);
@@ -122,7 +127,7 @@ export const SideBar: FC = () => {
   const onFileChange = useCallback(
     (path: string) => {
       console.log("change happened on", path);
-      onLoadDir(directoryPath);
+      debouncedOnloadDir(directoryPath);
     },
     [directoryPath]
   );
@@ -192,6 +197,31 @@ export const SideBar: FC = () => {
     }
   };
 
+  const onSelect = (path: string, type: "file" | "collection") => {
+    if (type === "file") set({ currentFilePaths: [path] });
+    if (type === "collection") set({ currentDirectoryPath: path });
+  };
+  const onMultiSelect = (path: string, type: "file" | "collection") => {
+    if (type === "file") {
+      if (!filePaths.includes(path))
+        set({
+          currentFilePaths: orderWith([...filePaths, path], customOrder),
+        });
+      else
+        set({
+          currentFilePaths: filePaths.filter((p) => p !== path),
+        });
+    }
+  };
+
+  const [_, drop] = useDrop({
+    accept: "file",
+    drop: async (item: any) => {
+      const path = item.id;
+      await onMove(path, dirname(directoryPath));
+    },
+  });
+
   if (!directoryPath)
     return (
       <SideBarStyled>
@@ -203,7 +233,7 @@ export const SideBar: FC = () => {
 
   return (
     <SideBarStyled>
-      <Title>
+      <Title ref={drop}>
         {directoryPath !== projectPath && (
           <div
             style={{
@@ -231,7 +261,7 @@ export const SideBar: FC = () => {
         >
           <Menu>
             <Trigger>
-              <FiPlus />
+              <VscAdd />
             </Trigger>
             <Content>
               <Item onSelect={() => set({ showAddItem: "file" })}>
@@ -254,43 +284,29 @@ export const SideBar: FC = () => {
             elements={orderedFileList}
             onSortChange={onSortChange}
             onCombine={onMove}
-            render={({ File, Directory }, handle) => (
-              <FileItem
-                dragHandle={handle}
-                path={File?.path || Directory.path}
-                name={Directory?.name || removeExt(File?.name || "")}
-                description={
-                  !!File
-                    ? File?.preview?.slice(0, 100)
-                    : `${Directory?.children_count} items`
-                }
-                type={!!File ? "file" : "collection"}
-                selected={filePaths.includes(File?.path)}
-                onSelect={() => {
-                  if (File) set({ currentFilePaths: [File.path] });
-                  if (Directory) set({ currentDirectoryPath: Directory.path });
-                }}
-                onMutliSelect={() => {
-                  if (File) {
-                    if (!filePaths.includes(File.path))
-                      set({ currentFilePaths: [...filePaths, File.path] });
-                    else
-                      set({
-                        currentFilePaths: filePaths.filter(
-                          (p) => p !== File.path
-                        ),
-                      });
+            render={({ File, Directory }, handle) => {
+              const type = !!File ? "file" : "collection";
+              const path = File?.path || Directory.path;
+
+              return (
+                <FileItem
+                  dragHandle={handle}
+                  path={path}
+                  type={type}
+                  name={Directory?.name || removeExt(File?.name || "")}
+                  description={
+                    !!File
+                      ? File?.preview?.slice(0, 100)
+                      : `${Directory?.children_count} items`
                   }
-                }}
-                onDelete={() =>
-                  onDelete(
-                    File?.path || Directory.path,
-                    !!File ? "file" : "collection"
-                  )
-                }
-                onChangeName={onRename}
-              />
-            )}
+                  selected={filePaths.includes(File?.path)}
+                  onSelect={() => onSelect(path, type)}
+                  onMutliSelect={() => onMultiSelect(path, type)}
+                  onDelete={() => onDelete(path, type)}
+                  onChangeName={onRename}
+                />
+              );
+            }}
           ></DraggableList>
           {showAddItem && (
             <FileItem

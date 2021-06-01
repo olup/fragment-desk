@@ -104,7 +104,9 @@ export const FileItem: FC<{
   const onValidateInput = (value: string) => {
     onChangeName?.(value, path);
   };
-  const autoFocus = useCallback((el) => (el ? el.focus() : null), []);
+  const autoFocus = useCallback((el) => {
+    setTimeout(() => el?.focus(), 10);
+  }, []);
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -160,7 +162,7 @@ export const FileItem: FC<{
             <Trigger>
               <VscKebabVertical />
             </Trigger>
-            <Content>
+            <Content side="right" align="start">
               <Item onSelect={() => setIsEditModeMLocal(true)}>
                 <ItemIcon as={VscEdit} />
                 Rename

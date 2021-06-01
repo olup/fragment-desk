@@ -1,11 +1,11 @@
 [package]
-name = "app"
-version = "0.1.8"
-description = "A Tauri App"
-authors = ["you"]
+name = "fragment"
+version = "0.1.9"
+description = "A writer's tiny desk"
+authors = ["loup topalian"]
 license = ""
 repository = ""
-default-run = "app"
+default-run = "fragment"
 edition = "2018"
 build = "src/build.rs"
 
@@ -21,6 +21,8 @@ tauri = { git = "https://github.com/tauri-apps/tauri", branch="dev", features = 
 crossbeam-channel = "0.4.0"
 notify = "5.0.0-pre.9"
 
+[patch.crates-io]
+tao = { git = "https://github.com/tauri-apps/tao", branch="dev" }
 
 
 [features]

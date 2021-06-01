@@ -1,6 +1,6 @@
 {
-  "name": "demo",
-  "version": "0.1.8",
+  "name": "fragment",
+  "version": "0.1.9",
   "private": true,
   "dependencies": {
     "@codemirror/commands": "^0.18.2",
@@ -48,7 +48,8 @@
     "start": "PORT=4000 BROWSER=false react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:app": "yarn build && yarn tauri build"
   },
   "eslintConfig": {
     "extends": [

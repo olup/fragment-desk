@@ -6,24 +6,16 @@ import { FC } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSidebar } from "react-icons/fi";
 import {
-  WiMoonAltFull,
-  WiMoonAltNew,
-  WiMoonAltThirdQuarter,
-  WiMoonFull,
-  WiMoonThirdQuarter,
-} from "react-icons/wi";
-import {
   VscChromeClose,
   VscChromeMaximize,
   VscChromeMinimize,
   VscFile,
-  VscFolder,
   VscFolderOpened,
   VscInfo,
 } from "react-icons/vsc";
+import { WiMoonFull } from "react-icons/wi";
 import { styled } from "theme";
 import { removeExt } from "utils";
-import { InfoBox } from "./InfoBox";
 import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
 
 const TopBarContainer = styled("div", {
@@ -68,6 +60,15 @@ export const TopBar: FC = () => {
   const topbarStyle = useStore((s) => s.topbarStyle);
   const set = useStore((s) => s.set);
   const { openFile, openDir } = useFs();
+
+  // calcuate title
+  let title = "Fragment";
+  if (filePaths?.length) {
+    title = removeExt(basename(filePaths[0]));
+    if (filePaths?.length > 1)
+      title = `${title} + ${filePaths.length - 1} sheets`;
+  }
+
   return (
     <TopBarContainer className="titlebar" data-tauri-drag-region="">
       <div style={{ flex: 1 }} data-tauri-drag-region="">
@@ -100,9 +101,7 @@ export const TopBar: FC = () => {
           style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
         />
       </div>
-      <div>
-        {filePaths?.length ? removeExt(basename(filePaths[0])) : "Fragment"}
-      </div>
+      <div>{title}</div>
       <div
         style={{ flex: 1, justifyContent: "flex-end", display: "flex" }}
         data-tauri-drag-region=""
@@ -128,7 +127,6 @@ export const TopBar: FC = () => {
           </>
         )}
       </div>
-      {showInfo && <InfoBox />}
     </TopBarContainer>
   );
 };

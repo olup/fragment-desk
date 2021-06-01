@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "fragment",
-    "version": "0.1.8"
+    "version": "0.1.9"
   },
   "build": {
     "distDir": "../build",
@@ -24,9 +24,9 @@
       "resources": [],
       "externalBin": [],
       "copyright": "",
-      "category": "DeveloperTool",
-      "shortDescription": "",
-      "longDescription": "",
+      "category": "WritingTool",
+      "shortDescription": "Fragment is a writer's digital notebook",
+      "longDescription": "Fragment is a writer's digital notebook",
       "deb": {
         "depends": [],
         "useBootstrapper": false

@@ -1,5 +1,6 @@
 import { writeFile } from "@tauri-apps/api/fs";
 import { FileEditor } from "components/FileEditor";
+import { InfoBar } from "components/InfoBar";
 import { SideBar } from "components/SideBar";
 import { Box } from "components/ui/Layout";
 import { ScrollArea } from "components/ui/ScrollArea";
@@ -8,6 +9,7 @@ import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { reset } from "stitches-reset";
 import { global, styled } from "theme";
+import { removeExt } from "utils";
 import "../node_modules/@fontsource/merriweather/latin-300.css";
 import "../node_modules/@fontsource/montserrat";
 import "../node_modules/@fontsource/ubuntu-mono";
@@ -35,6 +37,7 @@ function App() {
 
   const filePaths = useStore((s) => s.currentFilePaths);
   const showSide = useStore((s) => s.showSide);
+  const showInfo = useStore((s) => s.showInfo);
 
   return (
     <AppContainer>
@@ -79,23 +82,56 @@ function App() {
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
                 {filePaths?.map((path, index) => (
                   <>
-                    <FileEditor path={path} key={path} />
-                    {index !== filePaths.length - 1 && (
+                    {index !== 0 && (
                       <div
                         style={{
                           height: 0,
                           width: "100%",
                           borderTop: "2px dashed #eee",
                           margin: "10px 0",
+                          position: "relative",
                         }}
-                      />
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: -9,
+                            backgroundColor: "#fff",
+                            color: "#ccc",
+                            paddingRight: 7,
+                          }}
+                        >
+                          {removeExt(path)}
+                        </div>
+                      </div>
                     )}
+                    <FileEditor path={path} key={path} />
                   </>
                 ))}
               </div>
             </ScrollArea>
           </div>
         </div>
+        {showInfo && (
+          <div
+            style={{
+              position: "relative",
+              minWidth: 200,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+              }}
+            >
+              <InfoBar />
+            </div>
+          </div>
+        )}
       </div>
     </AppContainer>
   );
