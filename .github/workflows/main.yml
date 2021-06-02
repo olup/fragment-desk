@@ -37,7 +37,7 @@ jobs:
       with:
         tagName: app-v__VERSION__-debug # the action automatically replaces \_\_VERSION\_\_ with the app version
         releaseName: "App v__VERSION__ debug"
-        body: "See the assets to download this version and install."
-        draft: true
-        prerelease: false
-        args: "--debug"
+        # body: "See the assets to download this version and install."
+        # draft: true
+        prerelease: false,
+        includeDebug: true
