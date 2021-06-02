@@ -41,7 +41,6 @@
     "toml": "^3.0.0",
     "typescript": "^4.2.4",
     "use-debounce": "^6.0.1",
-    "vue-cli-plugin-tauri": "^1.0.0-beta.2",
     "web-vitals": "^1.1.2",
     "zustand": "^3.5.1"
   },
@@ -51,7 +50,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build:app": "yarn build && yarn tauri build",
-    "tauri:build:debug": "tauri build --debug"
+    "tauri:build:debug": "tauri build --debug &&"
   },
   "eslintConfig": {
     "extends": [
