@@ -2735,7 +2735,7 @@ dependencies = [
 [[package]]
 name = "tao"
 version = "0.2.6"
-source = "git+https://github.com/tauri-apps/tao?branch=dev#a3f533232df25dc30998809094ed5431b449489c"
+source = "git+https://github.com/tauri-apps/tao?branch=dev#6ca00629c914890969e7c793b00bfc319de188b7"
 dependencies = [
  "bitflags 1.2.1",
  "cairo-rs",
@@ -2778,7 +2778,7 @@ dependencies = [
 [[package]]
 name = "tauri"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#1341ca9a1bd2c5e3e07c210eced1e8ded977e7c7"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
 dependencies = [
  "attohttpc",
  "base64",
@@ -2795,6 +2795,7 @@ dependencies = [
  "once_cell",
  "open",
  "os_pipe",
+ "percent-encoding",
  "rand 0.8.3",
  "raw-window-handle",
  "rfd",
@@ -2832,7 +2833,7 @@ dependencies = [
 [[package]]
 name = "tauri-codegen"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#1341ca9a1bd2c5e3e07c210eced1e8ded977e7c7"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
 dependencies = [
  "blake3",
  "proc-macro2",
@@ -2875,7 +2876,7 @@ dependencies = [
 [[package]]
 name = "tauri-macros"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#1341ca9a1bd2c5e3e07c210eced1e8ded977e7c7"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
 dependencies = [
  "proc-macro2",
  "quote 1.0.9",
@@ -2886,7 +2887,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#1341ca9a1bd2c5e3e07c210eced1e8ded977e7c7"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
 dependencies = [
  "serde",
  "serde_json",
@@ -2899,10 +2900,11 @@ dependencies = [
 [[package]]
 name = "tauri-runtime-wry"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#1341ca9a1bd2c5e3e07c210eced1e8ded977e7c7"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
 dependencies = [
  "ico",
  "infer",
+ "png 0.16.8",
  "tauri-runtime",
  "tauri-utils",
  "uuid",
@@ -2913,7 +2915,7 @@ dependencies = [
 [[package]]
 name = "tauri-utils"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#1341ca9a1bd2c5e3e07c210eced1e8ded977e7c7"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
 dependencies = [
  "heck",
  "html5ever",
@@ -3521,9 +3523,9 @@ dependencies = [
 
 [[package]]
 name = "zstd"
-version = "0.8.1+zstd.1.5.0"
+version = "0.8.2+zstd.1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "357d6bb1bd9c6f6a55a5a15c74d01260b272f724dc60cc829b86ebd2172ac5ef"
+checksum = "c83508bcbbdc9c3abcf77e8e56773d3ffcd2479e0933caab2e7d6b5a9e183aae"
 dependencies = [
  "zstd-safe",
 ]
