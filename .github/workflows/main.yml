@@ -14,19 +14,41 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v2
+
     - name: setup node
       uses: actions/setup-node@v1
       with:
         node-version: 12
+
     - name: install Rust stable
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
+
+    - uses: actions/cache@v2
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - uses: actions/cache@v2
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
     - name: install webkit2gtk (ubuntu only)
       if: matrix.platform == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y webkit2gtk-4.0
+        
     - name: install app dependencies and build it
       run: yarn --network-timeout 1000000000 && yarn build
       env:
