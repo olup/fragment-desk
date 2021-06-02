@@ -1,6 +1,6 @@
 {
   "name": "fragment",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": true,
   "dependencies": {
     "@codemirror/commands": "^0.18.2",
