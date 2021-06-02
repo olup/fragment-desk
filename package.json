@@ -49,8 +49,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:app": "yarn build && yarn tauri build",
-    "tauri:build:debug": "tauri build --debug &&"
+    "build:app": "yarn build && yarn tauri build"
   },
   "eslintConfig": {
     "extends": [
