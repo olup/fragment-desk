@@ -7,6 +7,7 @@ import { ScrollArea } from "components/ui/ScrollArea";
 import { useStore } from "hooks/store";
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import LazyLoad from "react-lazyload";
 import { reset } from "stitches-reset";
 import { global, styled } from "theme";
 import { removeExt } from "utils";
@@ -105,7 +106,9 @@ function App() {
                         </div>
                       </div>
                     )}
-                    <FileEditor path={path} key={path} />
+                    <LazyLoad height={100} key={path} offset={100}>
+                      <FileEditor path={path} key={path} />
+                    </LazyLoad>
                   </>
                 ))}
               </div>

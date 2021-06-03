@@ -820,7 +820,7 @@ dependencies = [
 
 [[package]]
 name = "fragment"
-version = "0.1.9"
+version = "0.1.10"
 dependencies = [
  "crossbeam-channel 0.4.4",
  "notify",
@@ -1225,9 +1225,9 @@ dependencies = [
 
 [[package]]
 name = "heck"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87cbf45460356b7deeb5e3415b5563308c0a9b057c85e12b06ad551f98d0a6ac"
+checksum = "6d621efb26863f0e9924c6ac577e8275e5e6b77455db64ffa6c65c904e9e132c"
 dependencies = [
  "unicode-segmentation",
 ]
@@ -2464,9 +2464,9 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d023dabf011d5dcb5ac64e3685d97d3b0ef412911077a2851455c6098524a723"
+checksum = "965645ad4a66d27024921aa1e2e47a76524a4cfd55e038b62104eca65c363230"
 
 [[package]]
 name = "serde"
@@ -2778,7 +2778,7 @@ dependencies = [
 [[package]]
 name = "tauri"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#ae745189f99511f1ed00b7ae0cf80acbafd7f5b2"
 dependencies = [
  "attohttpc",
  "base64",
@@ -2833,7 +2833,7 @@ dependencies = [
 [[package]]
 name = "tauri-codegen"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#ae745189f99511f1ed00b7ae0cf80acbafd7f5b2"
 dependencies = [
  "blake3",
  "proc-macro2",
@@ -2876,7 +2876,7 @@ dependencies = [
 [[package]]
 name = "tauri-macros"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#ae745189f99511f1ed00b7ae0cf80acbafd7f5b2"
 dependencies = [
  "proc-macro2",
  "quote 1.0.9",
@@ -2887,7 +2887,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#ae745189f99511f1ed00b7ae0cf80acbafd7f5b2"
 dependencies = [
  "serde",
  "serde_json",
@@ -2900,7 +2900,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime-wry"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#ae745189f99511f1ed00b7ae0cf80acbafd7f5b2"
 dependencies = [
  "ico",
  "infer",
@@ -2915,7 +2915,7 @@ dependencies = [
 [[package]]
 name = "tauri-utils"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#c021968eb81f541599a3ce08eebb44e92604e39a"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#ae745189f99511f1ed00b7ae0cf80acbafd7f5b2"
 dependencies = [
  "heck",
  "html5ever",
@@ -3063,9 +3063,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-normalization"
-version = "0.1.18"
+version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33717dca7ac877f497014e10d73f3acf948c342bee31b5ca7892faf94ccc6b49"
+checksum = "d54590932941a9e9266f0832deed84ebe1bf2e4c9e4a3554d393d18f5e854bf9"
 dependencies = [
  "tinyvec",
 ]

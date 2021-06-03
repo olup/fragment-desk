@@ -70,7 +70,9 @@ export const Editor: FC<EditorProps> = ({
           setState(() => update.state.doc.toString());
         }),
         classHighlightStyle,
+        // @ts-ignore
         keymap.of(markdownKeymap),
+        //@ts-ignore
         keymap.of(defaultKeymap),
         keymap.of([
           {

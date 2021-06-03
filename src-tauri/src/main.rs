@@ -44,7 +44,7 @@ enum FsElement {
 }
 
 #[tauri::command]
-async fn list_dir_files(path: String) -> Vec<FsElement> {
+async fn list_dir_files(path: String, deep:Option<bool>) -> Vec<FsElement> {
   let paths = fs::read_dir(path).unwrap();
   let files: Vec<FsElement> = paths
     .map(|e| e.unwrap())
