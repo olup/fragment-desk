@@ -39,10 +39,8 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
-
-    # cache rust on *nix
     - uses: actions/cache@v2
-      if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
+      id: rust-cache
       with:
         path: |
           ~/.cargo/bin/
@@ -61,10 +59,10 @@ jobs:
     - uses: tauri-apps/tauri-action@v0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # with:
-      #   tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-      #   releaseName: "App v__VERSION__"
-      #   # body: "See the assets to download this version and install."
-      #   # draft: true
-      #   prerelease: false,
-      #   includeDebug: true
+      with:
+        tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+        releaseName: "App v__VERSION__"
+        # body: "See the assets to download this version and install."
+        # draft: true
+        prerelease: false,
+        includeDebug: true

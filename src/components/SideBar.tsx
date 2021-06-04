@@ -201,7 +201,7 @@ export const SideBar: FC = () => {
     if (type === "file") set({ currentFilePaths: [path] });
     if (type === "collection") set({ currentDirectoryPath: path });
   };
-  const onMultiSelect = (path: string, type: "file" | "collection") => {
+  const onMultiSelect = async (path: string, type: "file" | "collection") => {
     if (type === "file") {
       if (!filePaths.includes(path))
         set({
@@ -211,6 +211,14 @@ export const SideBar: FC = () => {
         set({
           currentFilePaths: filePaths.filter((p) => p !== path),
         });
+    } else {
+      const allPath = await invoke<string[]>("list_path_deep", { path });
+      set({
+        currentFilePaths: orderWith(
+          [...new Set([...filePaths, ...allPath])],
+          customOrder
+        ),
+      });
     }
   };
 

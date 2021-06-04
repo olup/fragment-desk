@@ -44,7 +44,7 @@ enum FsElement {
 }
 
 #[tauri::command]
-async fn list_dir_files(path: String, deep:Option<bool>) -> Vec<FsElement> {
+async fn list_dir_files(path: String) -> Vec<FsElement> {
   let paths = fs::read_dir(path).unwrap();
   let files: Vec<FsElement> = paths
     .map(|e| e.unwrap())
@@ -85,6 +85,25 @@ async fn list_dir_files(path: String, deep:Option<bool>) -> Vec<FsElement> {
     })
     .collect();
   files
+}
+
+fn list_path(path: String) -> Vec<String> {
+  let paths = fs::read_dir(path).unwrap();
+  let mut all_path = vec![];
+  paths.map(|e| e.unwrap()).for_each(|p| {
+    let path_string = p.path().to_str().unwrap().to_string();
+    if p.metadata().unwrap().is_dir() {
+      all_path.extend(list_path(path_string))
+    } else {
+      all_path.push(path_string);
+    }
+  });
+  all_path
+}
+
+#[tauri::command]
+fn list_path_deep(path: String) -> Vec<String> {
+  list_path(path)
 }
 
 #[tauri::command]
@@ -159,7 +178,8 @@ fn main() {
       list_dir_files,
       open_file,
       watch,
-      unwatch
+      unwatch,
+      list_path_deep
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

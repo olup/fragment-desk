@@ -1,20 +1,18 @@
-import { writeFile } from "@tauri-apps/api/fs";
 import { FileEditor } from "components/FileEditor";
 import { InfoBar } from "components/InfoBar";
 import { SideBar } from "components/SideBar";
 import { Box } from "components/ui/Layout";
 import { ScrollArea } from "components/ui/ScrollArea";
 import { useStore } from "hooks/store";
-import React, { useEffect } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-import LazyLoad from "react-lazyload";
+import React from "react";
 import { reset } from "stitches-reset";
 import { global, styled } from "theme";
 import { removeExt } from "utils";
 import "../node_modules/@fontsource/merriweather/latin-300.css";
 import "../node_modules/@fontsource/montserrat";
-import "../node_modules/@fontsource/ubuntu-mono";
+import "../node_modules/@fontsource/inconsolata";
 import { TopBar } from "./components/TopBar";
+import { invoke } from "@tauri-apps/api/tauri";
 
 const globalStyles = global(reset);
 const globalStylesExtension = global({
@@ -106,9 +104,7 @@ function App() {
                         </div>
                       </div>
                     )}
-                    <LazyLoad height={100} key={path} offset={100}>
-                      <FileEditor path={path} key={path} />
-                    </LazyLoad>
+                    <FileEditor path={path} key={path} />
                   </>
                 ))}
               </div>

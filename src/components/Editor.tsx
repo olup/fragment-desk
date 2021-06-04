@@ -31,7 +31,7 @@ const EditoContainer = styled("div", {
     outline: "none",
   },
   ".cm-line": {
-    fontFamily: "Ubuntu Mono",
+    fontFamily: "Inconsolata",
     padding: 0,
     "line-height": 1.8,
     "&:last-of-type": {
