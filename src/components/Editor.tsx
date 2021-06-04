@@ -63,17 +63,16 @@ export const Editor: FC<EditorProps> = ({
     let startState = EditorState.create({
       doc: initialValue,
       extensions: [
-        placeholder(placeholderText || "..."),
         markdownLanguage,
+        classHighlightStyle,
+        placeholder(placeholderText || "..."),
         EditorView.lineWrapping,
         EditorView.updateListener.of((update) => {
+          console.log(update);
           setState(() => update.state.doc.toString());
         }),
-        classHighlightStyle,
-        // @ts-ignore
-        keymap.of(markdownKeymap),
-        //@ts-ignore
-        keymap.of(defaultKeymap),
+        // keymap.of(markdownKeymap),
+        // keymap.of(defaultKeymap),
         keymap.of([
           {
             key: "Ctrl-s",
