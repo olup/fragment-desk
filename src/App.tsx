@@ -79,34 +79,35 @@ function App() {
           >
             <ScrollArea>
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-                {filePaths?.map((path, index) => (
-                  <>
-                    {index !== 0 && (
-                      <div
-                        style={{
-                          height: 0,
-                          width: "100%",
-                          borderTop: "2px dashed #eee",
-                          margin: "10px 0",
-                          position: "relative",
-                        }}
-                      >
+                {(filePaths?.length &&
+                  filePaths.map((path, index) => (
+                    <>
+                      {index !== 0 && (
                         <div
                           style={{
-                            position: "absolute",
-                            top: -9,
-                            backgroundColor: "#fff",
-                            color: "#ccc",
-                            paddingRight: 7,
+                            height: 0,
+                            width: "100%",
+                            borderTop: "2px dashed #eee",
+                            margin: "10px 0",
+                            position: "relative",
                           }}
                         >
-                          {removeExt(path)}
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: -9,
+                              backgroundColor: "#fff",
+                              color: "#ccc",
+                              paddingRight: 7,
+                            }}
+                          >
+                            {removeExt(path)}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    <FileEditor path={path} key={path} />
-                  </>
-                ))}
+                      )}
+                      <FileEditor path={path} key={path} />
+                    </>
+                  ))) || <FileEditor path={""} key={""} />}
               </div>
             </ScrollArea>
           </div>

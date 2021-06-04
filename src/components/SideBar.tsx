@@ -30,9 +30,8 @@ const SideBarStyled = styled("div", {
   flexDirection: "column",
   height: "100%",
   borderRight: "1px solid #ccc",
-  "&, & *": {
-    fontFamily: "Monserrat",
-  },
+
+  fontFamily: "Montserrat",
 });
 
 const Title = styled("div", {

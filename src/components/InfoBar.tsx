@@ -18,6 +18,7 @@ const Section = styled("div", {
 });
 
 const Button = styled("div", {
+  fontFamily: "Montserrat",
   textAlign: "center",
   border: "1px solid #eee",
   cursor: "pointer",

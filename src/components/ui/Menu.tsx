@@ -16,6 +16,7 @@ export const Content = styled(DropdownMenu.Content, {
   boxShadow: "0px 0px 15px  hsla(206,22%,7%,.15)",
   border: "1px solid #ddd",
   animation: `.1s ${scaleIn} ease-out`,
+  fontFamily: "Montserrat",
 });
 
 export const Item = styled(DropdownMenu.Item, {

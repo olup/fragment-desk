@@ -1342,7 +1342,7 @@
     style-mod "^4.0.0"
     w3c-keyname "^2.2.4"
 
-"@codemirror/view@^0.18.15":
+"@codemirror/view@^0.18.16":
   version "0.18.16"
   resolved "https://registry.yarnpkg.com/@codemirror/view/-/view-0.18.16.tgz#8cfb8751bd0224df1fa757abebd2ad2113ee1745"
   integrity sha512-5sFdVXV4Gdw8/JfyjzIAVL+IrLIGPoXrqs+fZmu3rPMQEnw7u/EkG2aKxnwf/IdDPLLVK6FDRWoddaZ25VIjdQ==
@@ -2213,10 +2213,10 @@
     lz-string "^1.4.4"
     pretty-format "^26.6.2"
 
-"@testing-library/jest-dom@^5.12.0":
-  version "5.12.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.12.0.tgz#6a5d340b092c44b7bce17a4791b47d9bc2c61443"
-  integrity sha512-N9Y82b2Z3j6wzIoAqajlKVF1Zt7sOH0pPee0sUHXHc5cv2Fdn23r+vpWm0MBBoGJtPOly5+Bdx1lnc3CD+A+ow==
+"@testing-library/jest-dom@^5.13.0":
+  version "5.13.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.13.0.tgz#0a365684e2c1159f857f5915be50089fc5657df0"
+  integrity sha512-+jXXTn8GjRnZkJfzG/tqK/2Q7dGlBInR412WE7Aml7CT3wdSpx5dMQC0HOwVQoZ3cNTmQUy8fCVGUV/Zhoyvcw==
   dependencies:
     "@babel/runtime" "^7.9.2"
     "@types/testing-library__jest-dom" "^5.9.1"
@@ -2415,10 +2415,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.31.tgz#72286bd33d137aa0d152d47ec7c1762563d34055"
   integrity sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g==
 
-"@types/node@^15.6.2":
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.2.tgz#c61d49f38af70da32424b5322eee21f97e627175"
-  integrity sha512-dxcOx8801kMo3KlU+C+/ctWrzREAH7YvoF3aoVpRdqgs+Kf7flp+PJDN/EX5bME3suDUZHsxes9hpvBmzYlWbA==
+"@types/node@^15.12.0":
+  version "15.12.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.0.tgz#6a459d261450a300e6865faeddb5af01c3389bb3"
+  integrity sha512-+aHJvoCsVhO2ZCuT4o5JtcPrCPyDE3+1nvbDprYes+pPkEsbjH7AGUCNtjMOXS0fqH14t+B7yLzaqSz92FPWyw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -13665,10 +13665,10 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-web-vitals@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-1.1.2.tgz#06535308168986096239aa84716e68b4c6ae6d1c"
-  integrity sha512-PFMKIY+bRSXlMxVAQ+m2aw9c/ioUYfDgrYot0YUa+/xa0sakubWhSDyxAKwzymvXVdF4CZI71g06W+mqhzu6ig==
+web-vitals@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-2.0.1.tgz#d122720bd9c8dd69792b19c0f6ab0346861a880f"
+  integrity sha512-niqKyp2T6xF9EzSi+xx+V6qitE0YfagzfUmDAa9qeCrIVeyfzQQ85Uy0ykeRlEVDCCqkhYccoUunNf9ZIQcvtA==
 
 webidl-conversions@^5.0.0:
   version "5.0.0"
