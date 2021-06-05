@@ -204,9 +204,9 @@ checksum = "b700ce4376041dcd0a327fd0097c41095743c4c8af8887265942faf1100bd040"
 
 [[package]]
 name = "bzip2"
-version = "0.3.3"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42b7c3cbf0fa9c1b82308d57191728ca0256cb821220f4e2fd410a72ade26e3b"
+checksum = "abf8012c8a15d5df745fcf258d93e6149dcf102882c8d8702d9cff778eab43a8"
 dependencies = [
  "bzip2-sys",
  "libc",
@@ -1701,9 +1701,9 @@ checksum = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
 
 [[package]]
 name = "notify"
-version = "5.0.0-pre.9"
+version = "5.0.0-pre.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b89869d77edd64db917d7903abeadc166f93686b342c56cc0ca51acb68441d09"
+checksum = "51f18203a26893ca1d3526cf58084025d5639f91c44f8b70ab3b724f60e819a0"
 dependencies = [
  "bitflags 1.2.1",
  "crossbeam-channel 0.5.1",
@@ -2421,9 +2421,9 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "security-framework"
-version = "2.2.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3670b1d2fdf6084d192bc71ead7aabe6c06aa2ea3fbd9cc3ac111fa5c2b1bd84"
+checksum = "b239a3d5db51252f6f48f42172c65317f37202f4a21021bf5f9d40a408f4592c"
 dependencies = [
  "bitflags 1.2.1",
  "core-foundation 0.9.1",
@@ -2434,9 +2434,9 @@ dependencies = [
 
 [[package]]
 name = "security-framework-sys"
-version = "2.2.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3676258fd3cfe2c9a0ec99ce3038798d847ce3e4bb17746373eb9f0f1ac16339"
+checksum = "7e4effb91b4b8b6fb7732e670b6cee160278ff8e6bf485c7805d9e319d76e284"
 dependencies = [
  "core-foundation-sys 0.8.2",
  "libc",
@@ -2778,7 +2778,7 @@ dependencies = [
 [[package]]
 name = "tauri"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#8f29a260e67aa111f6aeb262bd846a46d2858ce9"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
 dependencies = [
  "attohttpc",
  "base64",
@@ -2833,7 +2833,7 @@ dependencies = [
 [[package]]
 name = "tauri-codegen"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#8f29a260e67aa111f6aeb262bd846a46d2858ce9"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
 dependencies = [
  "blake3",
  "proc-macro2",
@@ -2876,7 +2876,7 @@ dependencies = [
 [[package]]
 name = "tauri-macros"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#8f29a260e67aa111f6aeb262bd846a46d2858ce9"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
 dependencies = [
  "proc-macro2",
  "quote 1.0.9",
@@ -2887,7 +2887,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#8f29a260e67aa111f6aeb262bd846a46d2858ce9"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
 dependencies = [
  "serde",
  "serde_json",
@@ -2900,7 +2900,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime-wry"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#8f29a260e67aa111f6aeb262bd846a46d2858ce9"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
 dependencies = [
  "ico",
  "infer",
@@ -2915,7 +2915,7 @@ dependencies = [
 [[package]]
 name = "tauri-utils"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#8f29a260e67aa111f6aeb262bd846a46d2858ce9"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
 dependencies = [
  "heck",
  "html5ever",
@@ -3509,9 +3509,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "0.5.12"
+version = "0.5.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c83dc9b784d252127720168abd71ea82bf8c3d96b17dc565b5e2a02854f2b27"
+checksum = "93ab48844d61251bb3835145c521d88aa4031d7139e8485990f60ca911fa0815"
 dependencies = [
  "byteorder",
  "bzip2",

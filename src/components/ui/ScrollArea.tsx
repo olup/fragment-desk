@@ -5,6 +5,7 @@ const Container = styled("div", {
   flex: 1,
   height: "100%",
   overflowY: "auto",
+  overflowX: "hidden",
 });
 
 // const StyledScrollArea = styled(Root, {
