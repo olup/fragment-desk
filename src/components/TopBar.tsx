@@ -30,11 +30,11 @@ const TopBarContainer = styled("div", {
   alignItems: "center",
   justifyContent: "center",
   userSelect: "none",
-  backgroundColor: "#fff",
+  //backgroundColor: "#fff",
   zIndex: 100,
   paddingLeft: 10,
   paddingRight: 10,
-  borderBottom: "1px solid #ccc",
+  //borderBottom: "1px solid #ccc",
   boxSizing: "border-box",
 });
 

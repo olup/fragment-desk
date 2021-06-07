@@ -16,7 +16,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FiArrowLeft, FiPlus } from "react-icons/fi";
 import { VscAdd, VscFile, VscFiles } from "react-icons/vsc";
-import { styled } from "theme";
+import { keyframes, styled } from "theme";
 import { FsElement } from "types";
 import { useDebouncedCallback } from "use-debounce/lib";
 import { orderWith, removeExt } from "utils";
@@ -25,13 +25,21 @@ import { FileItem } from "./FileItem";
 import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
 import { ScrollArea } from "./ui/ScrollArea";
 
+const Side = keyframes({
+  "0%": { transform: "translateX(-50px)", opacity: 0 },
+  "100%": { transform: "translateX(0)", opacity: 1 },
+});
+
 const SideBarStyled = styled("div", {
   display: "flex",
   flexDirection: "column",
+  paddingTop: 30,
   height: "100%",
-  borderRight: "1px solid #ccc",
-
+  //borderRight: "1px solid #ccc",
+  backgroundColor: "#eee",
   fontFamily: "Montserrat",
+  boxSizing: "border-box",
+  animation: `.1s ${Side}`,
 });
 
 const Title = styled("div", {
@@ -40,37 +48,6 @@ const Title = styled("div", {
   display: "flex",
   justifyContent: "center",
   position: "relative",
-});
-
-const FileStyled = styled("div", {
-  display: "Flex",
-  width: "100%",
-  userSelect: "none",
-  borderBottom: "1px solid #eee",
-  borderTop: "1px solid #eee",
-  padding: 10,
-  boxSizing: "border-box",
-  cursor: "pointer",
-  marginTop: -1,
-  position: "relative",
-  zIndex: 0,
-  opacity: 0.5,
-  backgroundColor: "#fff",
-  "&:hover": {
-    opacity: 1,
-
-    zIndex: 10,
-  },
-  variants: {
-    selected: {
-      true: {
-        opacity: 1,
-
-        boxShadow: "3px 0 0 #2d7be0 inset",
-        zIndex: 10,
-      },
-    },
-  },
 });
 
 const EmptyMessage = styled("div", {

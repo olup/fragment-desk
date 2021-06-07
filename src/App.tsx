@@ -47,6 +47,7 @@ function App() {
             style={{
               position: "relative",
               minWidth: 300,
+              marginTop: -30,
             }}
           >
             <div
@@ -117,6 +118,7 @@ function App() {
             style={{
               position: "relative",
               minWidth: 200,
+              marginTop: -30,
             }}
           >
             <div

@@ -1,18 +1,23 @@
 import { save } from "@tauri-apps/api/dialog";
 import { writeFile } from "@tauri-apps/api/fs";
 import { useStore } from "hooks/store";
-import { styled } from "theme";
+import { keyframes, styled } from "theme";
 import { compileFiles } from "utils";
 
+const Side = keyframes({
+  "0%": { transform: "translateX(50px)", opacity: 0 },
+  "100%": { transform: "translateX(0)", opacity: 1 },
+});
+
 const InfoBarStyled = styled("div", {
-  borderLeft: "1px solid #ccc",
-  backgroundColor: "#fff",
+  backgroundColor: "#eee",
   fontFamily: "Monserrat",
   height: "100%",
+  paddingTop: 30,
+  animation: `.1s ${Side}`,
 });
 
 const Section = styled("div", {
-  borderBottom: "1px solid #ccc",
   padding: 10,
   fontSize: 12,
 });
@@ -20,12 +25,12 @@ const Section = styled("div", {
 const Button = styled("div", {
   fontFamily: "Montserrat",
   textAlign: "center",
-  border: "1px solid #eee",
+  border: "1px solid #ccc",
   cursor: "pointer",
   padding: 7,
   borderRadius: 3,
   "&:hover": {
-    backgroundColor: "#eee",
+    backgroundColor: "#ddd",
     borderColor: "#ccc",
   },
 });

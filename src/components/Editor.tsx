@@ -71,8 +71,8 @@ export const Editor: FC<EditorProps> = ({
           console.log(update);
           setState(() => update.state.doc.toString());
         }),
-        // keymap.of(markdownKeymap),
-        // keymap.of(defaultKeymap),
+        keymap.of(markdownKeymap),
+        keymap.of(defaultKeymap),
         keymap.of([
           {
             key: "Ctrl-s",

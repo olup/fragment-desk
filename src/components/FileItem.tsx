@@ -28,7 +28,7 @@ const FileStyled = styled("div", {
   position: "relative",
   zIndex: 0,
   opacity: 0.5,
-  backgroundColor: "#fff",
+  backgroundColor: "#eee",
   ".hover": {
     display: "none",
   },

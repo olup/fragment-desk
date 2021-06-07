@@ -2778,7 +2778,7 @@ dependencies = [
 [[package]]
 name = "tauri"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#5cba6eb4d28d53f06855d60d4d0eae6b95233ccf"
 dependencies = [
  "attohttpc",
  "base64",
@@ -2833,7 +2833,7 @@ dependencies = [
 [[package]]
 name = "tauri-codegen"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#5cba6eb4d28d53f06855d60d4d0eae6b95233ccf"
 dependencies = [
  "blake3",
  "proc-macro2",
@@ -2876,7 +2876,7 @@ dependencies = [
 [[package]]
 name = "tauri-macros"
 version = "1.0.0-beta.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#5cba6eb4d28d53f06855d60d4d0eae6b95233ccf"
 dependencies = [
  "proc-macro2",
  "quote 1.0.9",
@@ -2887,7 +2887,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#5cba6eb4d28d53f06855d60d4d0eae6b95233ccf"
 dependencies = [
  "serde",
  "serde_json",
@@ -2900,7 +2900,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime-wry"
 version = "0.1.1"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#5cba6eb4d28d53f06855d60d4d0eae6b95233ccf"
 dependencies = [
  "ico",
  "infer",
@@ -2915,7 +2915,7 @@ dependencies = [
 [[package]]
 name = "tauri-utils"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/tauri-apps/tauri?branch=dev#f877aa5dd0eb8357e0274d458564d069449aaebe"
+source = "git+https://github.com/tauri-apps/tauri?branch=dev#5cba6eb4d28d53f06855d60d4d0eae6b95233ccf"
 dependencies = [
  "heck",
  "html5ever",
