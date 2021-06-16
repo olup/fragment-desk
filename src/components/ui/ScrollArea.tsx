@@ -1,68 +1,54 @@
 import { FC } from "react";
+import * as RadixScrollArea from "@radix-ui/react-scroll-area";
 import { styled } from "theme";
 
 const Container = styled("div", {
   flex: 1,
   height: "100%",
-  overflowY: "auto",
-  overflowX: "hidden",
 });
 
-// const StyledScrollArea = styled(Root, {
-//   position: "relative",
-//   height: "100%",
-//   zIndex: 0,
-//   "& [data-radix-scroll-area-viewport-position]::-webkit-scrollbar": {
-//     display: "none",
-//   },
-// });
+const StyledScrollArea = styled(RadixScrollArea.Root, {
+  width: "100%",
+  height: "100%",
+});
 
-// const StyledViewport = styled(Viewport, {
-//   zIndex: 1,
-//   position: "relative",
-// });
+const StyledViewport = styled(RadixScrollArea.Viewport, {
+  width: "100%",
+  height: "100%",
+});
 
-// const StyledScrollbarY = styled(ScrollbarY, {
-//   zIndex: 2,
-//   position: "absolute",
-//   userSelect: "none",
-//   transition: "300ms opacity ease",
-//   width: 8,
-//   right: 0,
-//   top: 0,
-//   bottom: 0,
-// });
+const StyledThumb = styled(RadixScrollArea.Thumb, {
+  flex: 1,
+  background: "rgba(0, 0, 0, 0.5)",
+  maxWidth: 3,
+  transition: "max-width 100ms ease-out",
 
-// const StyledTrack = styled(Track, {
-//   zIndex: -1,
-//   position: "relative",
-//   width: "100%",
-//   height: "100%",
-// });
+  //borderRadius: SCROLLBAR_SIZE,
+});
 
-// const StyledThumb = styled(Thumb, {
-//   backgroundColor: "#222",
-//   opacity: 0.5,
-//   position: "absolute",
-//   top: 0,
-//   left: 0,
-//   userSelect: "none",
-//   // borderRadius: 9999,
-//   willChange: `var(${SCROLL_AREA_CSS_PROPS.scrollbarThumbWillChange})`,
-//   height: `var(${SCROLL_AREA_CSS_PROPS.scrollbarThumbHeight})`,
-//   width: `var(${SCROLL_AREA_CSS_PROPS.scrollbarThumbWidth})`,
-// });
+const StyledScrollbar = styled(RadixScrollArea.Scrollbar, {
+  zIndex: 1000,
+  display: "flex",
+  justifyContent: "flex-end",
+  background: "rgba(0, 0, 0, 0)",
+  width: 10,
+  "&:hover": {
+    background: "rgba(0, 0, 0, 0.1)",
+    [`& ${StyledThumb}`]: {
+      maxWidth: 10,
+    },
+  },
+  transition: "all 100ms ease-out",
+});
 
 export const ScrollArea: FC = ({ children }) => (
   <Container>
-    {children}
-    {/* <StyledScrollArea>
+    {/* {children} */}
+    <StyledScrollArea scrollHideDelay={0}>
       <StyledViewport>{children}</StyledViewport>
-      <StyledScrollbarY>
-        <StyledTrack>
-          <StyledThumb />
-        </StyledTrack>
-      </StyledScrollbarY>
-    </StyledScrollArea> */}
+      <StyledScrollbar>
+        <StyledThumb />
+      </StyledScrollbar>
+    </StyledScrollArea>
   </Container>
 );

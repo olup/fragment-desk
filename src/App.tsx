@@ -13,6 +13,8 @@ import "../node_modules/@fontsource/montserrat";
 import "../node_modules/@fontsource/inconsolata";
 import { TopBar } from "./components/TopBar";
 import { invoke } from "@tauri-apps/api/tauri";
+import { FileOrCollection } from "components/FileOrCollection";
+import { Separator } from "components/Separator";
 
 const globalStyles = global(reset);
 const globalStylesExtension = global({
@@ -20,6 +22,9 @@ const globalStylesExtension = global({
     borderRadius: 8,
     backgroundColor: "#fff",
     overflow: "hidden",
+    "*::selection": {
+      background: "#d4d4d4",
+    },
   },
 });
 
@@ -37,6 +42,7 @@ function App() {
   const filePaths = useStore((s) => s.currentFilePaths);
   const showSide = useStore((s) => s.showSide);
   const showInfo = useStore((s) => s.showInfo);
+  const set = useStore((s) => s.set);
 
   return (
     <AppContainer>
@@ -80,35 +86,17 @@ function App() {
           >
             <ScrollArea>
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-                {(filePaths?.length &&
-                  filePaths.map((path, index) => (
-                    <>
-                      {index !== 0 && (
-                        <div
-                          style={{
-                            height: 0,
-                            width: "100%",
-                            borderTop: "2px dashed #eee",
-                            margin: "10px 0",
-                            position: "relative",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: -9,
-                              backgroundColor: "#fff",
-                              color: "#ccc",
-                              paddingRight: 7,
-                            }}
-                          >
-                            {removeExt(path)}
-                          </div>
-                        </div>
-                      )}
-                      <FileEditor path={path} key={path} />
-                    </>
-                  ))) || <FileEditor path={""} key={""} />}
+                {filePaths?.map((path, index) => (
+                  <>
+                    {index !== 0 && (
+                      <Separator
+                        title={removeExt(path)}
+                        onClick={() => set({ currentFilePaths: [path] })}
+                      />
+                    )}
+                    <FileOrCollection path={path} key={path} />
+                  </>
+                )) || null}
               </div>
             </ScrollArea>
           </div>

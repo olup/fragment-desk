@@ -83,6 +83,39 @@ export const SideBar: FC = () => {
     ...fileListWithPathAndId.filter((f) => !customOrder.includes(f.path)),
   ];
 
+  console.log(filePaths);
+
+  /**--------------------------------------------------------------------------- */
+
+  // if (filePaths.length) {
+  //   // Find smallest common path
+  //   const arrayPaths = filePaths.map((f) => f.split("/"));
+  //   arrayPaths.sort((a, b) => b.length - a.length);
+  //   const pivot = arrayPaths[0].map((e, i) => arrayPaths.map((el) => el[i]));
+  //   const minimCommonPivot = pivot.filter((l) => l.every((i) => i === l[0]));
+  //   const minPAthArray = minimCommonPivot.map((i) => i[0]);
+  //   // reduce array path
+  //   const reducesArrayPaths = arrayPaths.map((p) =>
+  //     p.slice(minPAthArray.length)
+  //   );
+  //   // From common path, builds an object
+  //   const red = (res: any, p: string[]) => {
+  //     if (p.length === 0) return;
+  //     else if (p.length === 1) res[p[0]] = true;
+  //     else {
+  //       res[p[0]] = {};
+  //       red(res[p[0]], p.slice(1));
+  //     }
+  //   };
+  //   const res: Record<string, any> = {};
+  //   reducesArrayPaths.forEach((p) => {
+  //     red(res, p);
+  //   });
+  //   console.log(res);
+  // }
+
+  /**--------------------------------------------------------------------------- */
+
   const onLoadDir = async (path?: string) => {
     if (!path) return;
     console.log("Reloading " + path);
@@ -180,24 +213,29 @@ export const SideBar: FC = () => {
     if (type === "collection") set({ currentDirectoryPath: path });
   };
   const onMultiSelect = async (path: string, type: "file" | "collection") => {
-    if (type === "file") {
-      if (!filePaths.includes(path))
-        set({
-          currentFilePaths: orderWith([...filePaths, path], customOrder),
-        });
-      else
-        set({
-          currentFilePaths: filePaths.filter((p) => p !== path),
-        });
-    } else {
-      const allPath = await invoke<string[]>("list_path_deep", { path });
+    if (!filePaths.includes(path))
       set({
-        currentFilePaths: orderWith(
-          [...new Set([...filePaths, ...allPath])],
-          customOrder
-        ),
+        currentFilePaths: orderWith([...filePaths, path], customOrder),
       });
-    }
+    else
+      set({
+        currentFilePaths: filePaths.filter((p) => p !== path),
+      });
+    // } else {
+    //   if (!!filePaths.find((filePath) => filePath.startsWith(path))) {
+    //     set({
+    //       currentFilePaths: filePaths.filter((p) => !p.startsWith(path)),
+    //     });
+    //   } else {
+    //     const allPath = await invoke<string[]>("list_path_deep", { path });
+    //     set({
+    //       currentFilePaths: orderWith(
+    //         [...new Set([...filePaths, ...allPath])],
+    //         customOrder
+    //       ),
+    //     });
+    //   }
+    // }
   };
 
   const [_, drop] = useDrop({
@@ -285,7 +323,9 @@ export const SideBar: FC = () => {
                       ? File?.preview?.slice(0, 100)
                       : `${Directory?.children_count} items`
                   }
-                  selected={filePaths.includes(File?.path)}
+                  selected={
+                    !!filePaths.find((filePath) => path.startsWith(filePath))
+                  }
                   onSelect={() => onSelect(path, type)}
                   onMutliSelect={() => onMultiSelect(path, type)}
                   onDelete={() => onDelete(path, type)}

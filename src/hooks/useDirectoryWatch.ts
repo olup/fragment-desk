@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 export const useDirectoryWatch = (path: string, cb: (path: string) => void) => {
   useEffect(() => {
+    if (!path) return;
     invoke("watch", { path });
     return () => {
       invoke("unwatch", { path });
@@ -11,6 +12,8 @@ export const useDirectoryWatch = (path: string, cb: (path: string) => void) => {
   }, [path]);
 
   useEffect(() => {
+    if (!path || !cb) return;
+
     let stop: any;
     listen<string>("file_changed", (event) => {
       cb(event.payload);

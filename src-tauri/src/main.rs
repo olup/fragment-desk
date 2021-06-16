@@ -48,9 +48,21 @@ async fn list_dir_files(path: String) -> Vec<FsElement> {
   let paths = fs::read_dir(path).unwrap();
   let files: Vec<FsElement> = paths
     .map(|e| e.unwrap())
+    .filter(|p| !p.file_name().to_str().unwrap().starts_with("."))
     .map(|this_path| -> Result<FsElement, Box<dyn Error>> {
       if this_path.metadata()?.is_dir() {
-        let children_count = i32::try_from(fs::read_dir(this_path.path())?.count())?;
+        let children_count = i32::try_from(
+          fs::read_dir(this_path.path())?
+            .filter(|p| {
+              !p.as_ref()
+                .unwrap()
+                .file_name()
+                .to_str()
+                .unwrap()
+                .starts_with('.')
+            })
+            .count(),
+        )?;
 
         Ok(FsElement::Directory(Directory {
           name: this_path.file_name().to_str().unwrap().to_string(),
@@ -87,23 +99,44 @@ async fn list_dir_files(path: String) -> Vec<FsElement> {
   files
 }
 
-fn list_path(path: String) -> Vec<String> {
+// #[tauri::command]
+// fn list_path(path: String) -> Vec<String> {
+//   let paths = fs::read_dir(path).unwrap();
+//   paths
+//     .map(|e| e.unwrap())
+//     .filter(|p| !p.file_name().to_str().unwrap().starts_with('.'))
+//     .map(|p| p.path().to_str().unwrap().to_string())
+//     .collect()
+// }
+
+fn list_path(path: String, deep: bool) -> Vec<String> {
   let paths = fs::read_dir(path).unwrap();
   let mut all_path = vec![];
-  paths.map(|e| e.unwrap()).for_each(|p| {
-    let path_string = p.path().to_str().unwrap().to_string();
-    if p.metadata().unwrap().is_dir() {
-      all_path.extend(list_path(path_string))
-    } else {
-      all_path.push(path_string);
-    }
-  });
+  paths // filter out dot-starting path
+    .map(|e| e.unwrap())
+    .filter(|p| {
+      println!("{}", p.file_name().to_str().unwrap());
+      !p.file_name().to_str().unwrap().starts_with('.')
+    })
+    .for_each(|p| {
+      let path_string = p.path().to_str().unwrap().to_string();
+      if p.metadata().unwrap().is_dir() && deep {
+        all_path.extend(list_path(path_string, deep))
+      } else {
+        all_path.push(path_string);
+      }
+    });
   all_path
 }
 
 #[tauri::command]
-fn list_path_deep(path: String) -> Vec<String> {
-  list_path(path)
+fn list_path_deep(path: String, deep: bool) -> Vec<String> {
+  list_path(path, deep)
+}
+
+#[tauri::command]
+fn is_dir(path: String) -> bool {
+  fs::metadata(path).unwrap().is_dir()
 }
 
 #[tauri::command]
@@ -179,7 +212,8 @@ fn main() {
       open_file,
       watch,
       unwatch,
-      list_path_deep
+      list_path_deep,
+      is_dir
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
