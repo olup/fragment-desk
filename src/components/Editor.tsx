@@ -1,12 +1,54 @@
 import { defaultKeymap } from "@codemirror/commands";
 import { classHighlightStyle } from "@codemirror/highlight";
 import { markdownKeymap, markdownLanguage } from "@codemirror/lang-markdown";
-import { EditorState } from "@codemirror/state";
+import { EditorState, Text } from "@codemirror/state";
 import { EditorView, keymap, placeholder } from "@codemirror/view";
 import { styled } from "theme";
 import { FC, useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
 import { useStore } from "hooks/store";
+
+function updatePos() {
+  let x = 0,
+    y = 0;
+  const isSupported = typeof window.getSelection !== "undefined";
+  if (isSupported) {
+    const selection = window.getSelection();
+    if (!selection) return { x: 0, y: 0 };
+    if (selection.rangeCount !== 0) {
+      const range = selection.getRangeAt(0).cloneRange();
+      range.collapse(true);
+      const rects = range.getClientRects();
+
+      if (!rects.length) {
+        // probably new line buggy behavior
+        if (range.startContainer && range.collapsed) {
+          range.selectNodeContents(range.startContainer);
+        }
+      }
+
+      const rect = range.getClientRects()[0];
+      if (rect) {
+        x = rect.left;
+        y = rect.top;
+      }
+    }
+  }
+
+  const caretPos = y;
+  const bottomTreshold = (window.outerHeight / 3) * 2;
+  const topTreshold = bottomTreshold - 50;
+  const scroller = document.getElementById("main-scroll");
+  if (caretPos > bottomTreshold) {
+    const offset = caretPos - bottomTreshold;
+    scroller?.scroll({ top: scroller?.scrollTop + offset });
+  }
+  if (caretPos < topTreshold) {
+    const offset = topTreshold - caretPos;
+    scroller?.scroll({ top: scroller?.scrollTop - offset });
+  }
+  return { x, y };
+}
 
 const EditoContainer = styled("div", {
   width: "100%",
@@ -56,6 +98,11 @@ export const Editor: FC<EditorProps> = ({
 
   const editor = useRef<HTMLDivElement | null>(null);
 
+  if (editor.current)
+    editor.current.onkeydown = (e) => {
+      if (useStore.getState().scrollMode) updatePos();
+    };
+
   // initialize view
   useEffect(() => {
     if (!editor.current) return;
@@ -68,7 +115,6 @@ export const Editor: FC<EditorProps> = ({
         placeholder(placeholderText || "..."),
         EditorView.lineWrapping,
         EditorView.updateListener.of((update) => {
-          console.log(update);
           setState(() => update.state.doc.toString());
         }),
         //@ts-ignore

@@ -14,9 +14,11 @@ import {
   VscInfo,
 } from "react-icons/vsc";
 import { WiMoonFull } from "react-icons/wi";
+import { RiFilePaper2Line } from "react-icons/ri";
 import { styled } from "theme";
 import { removeExt } from "utils";
 import { Content, Item, ItemIcon, Menu, Trigger } from "./ui/Menu";
+import { Tooltip } from "./ui/Tooltip";
 
 const TopBarContainer = styled("div", {
   fontFamily: "Montserrat",
@@ -52,11 +54,10 @@ const TopIconRight = styled(TopIconLeft, {
 });
 
 export const TopBar: FC = () => {
-  const [showSide, filePaths] = useStore((s) => [
-    s.showSide,
-    s.currentFilePaths,
-  ]);
+  const showSide = useStore((s) => s.showSide);
+  const filePaths = useStore((s) => s.currentFilePaths);
   const showInfo = useStore((s) => s.showInfo);
+  const scrollMode = useStore((s) => s.scrollMode);
   const topbarStyle = useStore((s) => s.topbarStyle);
   const set = useStore((s) => s.set);
   const { openFile, openDir } = useFs();
@@ -71,7 +72,7 @@ export const TopBar: FC = () => {
 
   return (
     <TopBarContainer className="titlebar" data-tauri-drag-region="">
-      <div style={{ flex: 1 }} data-tauri-drag-region="">
+      <div style={{ flex: 1, display: "flex" }} data-tauri-drag-region="">
         {topbarStyle === "macos" && (
           <>
             <TopIconLeft as={WiMoonFull} />
@@ -79,9 +80,12 @@ export const TopBar: FC = () => {
             <TopIconLeft as={WiMoonFull} />
           </>
         )}
+
         <Menu>
           <Trigger>
-            <TopIconLeft as={AiOutlineMenu} />
+            <Tooltip label="Open Menu">
+              <TopIconLeft as={AiOutlineMenu} />{" "}
+            </Tooltip>
           </Trigger>
           <Content sideOffset={10}>
             <Item onSelect={openFile}>
@@ -95,17 +99,26 @@ export const TopBar: FC = () => {
           </Content>
         </Menu>
 
-        <TopIconLeft
-          as={FiSidebar}
-          onClick={() => set({ showSide: !showSide })}
-          style={{ opacity: showSide ? 1 : 0.3, cursor: "pointer" }}
-        />
+        <Tooltip label="Open Side Bar">
+          <TopIconLeft
+            as={FiSidebar}
+            onClick={() => set({ showSide: !showSide })}
+            style={{ opacity: showSide ? 1 : 0.3 }}
+          />
+        </Tooltip>
       </div>
       <div>{title}</div>
       <div
         style={{ flex: 1, justifyContent: "flex-end", display: "flex" }}
         data-tauri-drag-region=""
       >
+        <Tooltip label="Typewriter mode">
+          <TopIconRight
+            as={RiFilePaper2Line}
+            style={{ opacity: scrollMode ? 1 : 0.3 }}
+            onClick={() => set({ scrollMode: !scrollMode })}
+          />
+        </Tooltip>
         <TopIconRight
           as={VscInfo}
           onClick={() => set({ showInfo: !showInfo })}

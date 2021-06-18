@@ -39,7 +39,7 @@ const SideBarStyled = styled("div", {
   backgroundColor: "#eee",
   fontFamily: "Montserrat",
   boxSizing: "border-box",
-  animation: `.1s ${Side}`,
+  //animation: `.1s ${Side}`,
 });
 
 const Title = styled("div", {
@@ -57,6 +57,7 @@ const EmptyMessage = styled("div", {
   padding: 20,
   opacity: 0.5,
   boxSizing: "border-box",
+  lineHeight: 1.3,
 });
 
 export const SideBar: FC = () => {

@@ -15,6 +15,7 @@ import { TopBar } from "./components/TopBar";
 import { invoke } from "@tauri-apps/api/tauri";
 import { FileOrCollection } from "components/FileOrCollection";
 import { Separator } from "components/Separator";
+import { Editor } from "components/Editor";
 
 const globalStyles = global(reset);
 const globalStylesExtension = global({
@@ -42,6 +43,7 @@ function App() {
   const filePaths = useStore((s) => s.currentFilePaths);
   const showSide = useStore((s) => s.showSide);
   const showInfo = useStore((s) => s.showInfo);
+  const scrollMode = useStore((s) => s.scrollMode);
   const set = useStore((s) => s.set);
 
   return (
@@ -84,7 +86,7 @@ function App() {
               right: 0,
             }}
           >
-            <ScrollArea>
+            <ScrollArea id="main-scroll">
               <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
                 {filePaths?.map((path, index) => (
                   <>
@@ -96,7 +98,9 @@ function App() {
                     )}
                     <FileOrCollection path={path} key={path} />
                   </>
-                )) || null}
+                ))}
+                <Editor placeholder="Start here" />
+                {scrollMode && <Box style={{ height: 200 }} />}
               </div>
             </ScrollArea>
           </div>

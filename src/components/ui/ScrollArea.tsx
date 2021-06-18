@@ -41,11 +41,11 @@ const StyledScrollbar = styled(RadixScrollArea.Scrollbar, {
   transition: "all 100ms ease-out",
 });
 
-export const ScrollArea: FC = ({ children }) => (
+export const ScrollArea: FC<{ id?: string }> = ({ children, id }) => (
   <Container>
     {/* {children} */}
     <StyledScrollArea scrollHideDelay={0}>
-      <StyledViewport>{children}</StyledViewport>
+      <StyledViewport id={id}>{children}</StyledViewport>
       <StyledScrollbar>
         <StyledThumb />
       </StyledScrollbar>
