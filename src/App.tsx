@@ -50,12 +50,14 @@ function App() {
     <AppContainer>
       <TopBar />
       <div style={{ display: "flex", flex: 1 }}>
-        {showSide && (
+        {true && (
           <div
             style={{
               position: "relative",
-              minWidth: 300,
+              minWidth: showSide ? 300 : 0,
               marginTop: -30,
+              transition: "100ms min-width",
+              overflow: "hidden",
             }}
           >
             <div
@@ -64,7 +66,7 @@ function App() {
                 top: 0,
                 bottom: 0,
                 left: 0,
-                right: 0,
+                width: 300,
               }}
             >
               <SideBar />
@@ -99,7 +101,6 @@ function App() {
                     <FileOrCollection path={path} key={path} />
                   </>
                 ))}
-                <Editor placeholder="Start here" />
                 {scrollMode && <Box style={{ height: 200 }} />}
               </div>
             </ScrollArea>

@@ -16,6 +16,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FiArrowLeft, FiPlus } from "react-icons/fi";
 import { VscAdd, VscFile, VscFiles } from "react-icons/vsc";
+import LazyLoad from "react-lazyload";
 import { keyframes, styled } from "theme";
 import { FsElement } from "types";
 import { useDebouncedCallback } from "use-debounce/lib";
@@ -303,7 +304,7 @@ export const SideBar: FC = () => {
       </Title>
 
       <div style={{ flex: 1, minHeight: 0 }}>
-        <ScrollArea>
+        <ScrollArea id="side-scroll">
           <DraggableList
             forType="file"
             elements={orderedFileList}
@@ -312,26 +313,31 @@ export const SideBar: FC = () => {
             render={({ File, Directory }, handle) => {
               const type = !!File ? "file" : "collection";
               const path = File?.path || Directory.path;
-
               return (
-                <FileItem
-                  dragHandle={handle}
-                  path={path}
-                  type={type}
-                  name={Directory?.name || removeExt(File?.name || "")}
-                  description={
-                    !!File
-                      ? File?.preview?.slice(0, 100)
-                      : `${Directory?.children_count} items`
+                <LazyLoad
+                  scrollContainer={
+                    document.getElementById("side-scroll") as any
                   }
-                  selected={
-                    !!filePaths.find((filePath) => path.startsWith(filePath))
-                  }
-                  onSelect={() => onSelect(path, type)}
-                  onMutliSelect={() => onMultiSelect(path, type)}
-                  onDelete={() => onDelete(path, type)}
-                  onChangeName={onRename}
-                />
+                >
+                  <FileItem
+                    dragHandle={handle}
+                    path={path}
+                    type={type}
+                    name={Directory?.name || removeExt(File?.name || "")}
+                    description={
+                      !!File
+                        ? File?.preview?.slice(0, 100)
+                        : `${Directory?.children_count} items`
+                    }
+                    selected={
+                      !!filePaths.find((filePath) => path.startsWith(filePath))
+                    }
+                    onSelect={() => onSelect(path, type)}
+                    onMutliSelect={() => onMultiSelect(path, type)}
+                    onDelete={() => onDelete(path, type)}
+                    onChangeName={onRename}
+                  />
+                </LazyLoad>
               );
             }}
           ></DraggableList>

@@ -107,7 +107,7 @@ export const TopBar: FC = () => {
           />
         </Tooltip>
       </div>
-      <div>{title}</div>
+      <div>{title || "Fragment"}</div>
       <div
         style={{ flex: 1, justifyContent: "flex-end", display: "flex" }}
         data-tauri-drag-region=""

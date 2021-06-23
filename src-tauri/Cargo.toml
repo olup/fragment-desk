@@ -1,6 +1,6 @@
 [package]
 name = "fragment"
-version = "0.1.13"
+version = "0.1.14"
 description = "A writer's tiny desk"
 authors = ["loup topalian"]
 license = ""
