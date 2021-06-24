@@ -76,8 +76,10 @@ async fn list_dir_files(path: String) -> Vec<FsElement> {
         let created_at = meta.created()?.duration_since(UNIX_EPOCH)?.as_secs();
         let updated_at = meta.modified()?.duration_since(UNIX_EPOCH)?.as_secs();
 
-        let content =
-          fs::read_to_string(&file_path).expect("Something went wrong reading the file");
+        let content = match fs::read_to_string(&file_path) {
+          Ok(content) => content,
+          Err(_) => String::from(""),
+        };
 
         return Ok(FsElement::File(File {
           name,
