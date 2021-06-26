@@ -52,12 +52,13 @@ function updatePos() {
 
 const EditoContainer = styled("div", {
   width: "100%",
-  fontSize: 16,
+  fontSize: 18,
   ".cmt-meta": {
     opacity: 0.3,
   },
   ".cmt-heading": {
     fontWeight: "bold",
+    fontSize: 20,
     color: "rgb(46, 91, 196)",
     "&.cmt-meta": {
       opacity: 1,
@@ -74,8 +75,8 @@ const EditoContainer = styled("div", {
   },
   ".cm-line": {
     fontFamily: "Inconsolata",
-    padding: 0,
-    "line-height": 1.8,
+    "line-height": 1.5,
+    paddingBottom: 10,
     "&:last-of-type": {
       paddingBottom: 0,
     },

@@ -175,6 +175,7 @@ export const SideBar: FC = () => {
 
     if (type === "collection") {
       await createDir(join(directoryPath, name));
+      set({ showAddItem: false });
     }
   };
 
@@ -314,30 +315,25 @@ export const SideBar: FC = () => {
               const type = !!File ? "file" : "collection";
               const path = File?.path || Directory.path;
               return (
-                <LazyLoad
-                  scrollContainer={
-                    document.getElementById("side-scroll") as any
+                <FileItem
+                  dragHandle={handle}
+                  key={path}
+                  path={path}
+                  type={type}
+                  name={Directory?.name || removeExt(File?.name || "")}
+                  description={
+                    !!File
+                      ? File?.preview?.slice(0, 100)
+                      : `${Directory?.children_count} items`
                   }
-                >
-                  <FileItem
-                    dragHandle={handle}
-                    path={path}
-                    type={type}
-                    name={Directory?.name || removeExt(File?.name || "")}
-                    description={
-                      !!File
-                        ? File?.preview?.slice(0, 100)
-                        : `${Directory?.children_count} items`
-                    }
-                    selected={
-                      !!filePaths.find((filePath) => path.startsWith(filePath))
-                    }
-                    onSelect={() => onSelect(path, type)}
-                    onMutliSelect={() => onMultiSelect(path, type)}
-                    onDelete={() => onDelete(path, type)}
-                    onChangeName={onRename}
-                  />
-                </LazyLoad>
+                  selected={
+                    !!filePaths.find((filePath) => path.startsWith(filePath))
+                  }
+                  onSelect={() => onSelect(path, type)}
+                  onMutliSelect={() => onMultiSelect(path, type)}
+                  onDelete={() => onDelete(path, type)}
+                  onChangeName={onRename}
+                />
               );
             }}
           ></DraggableList>
